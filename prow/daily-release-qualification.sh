@@ -39,5 +39,4 @@ cd istio
   --pilot_hub "${HUB}"\
   --ca_tag "${TAG}"\
   --ca_hub "${HUB}"\
-  # --istioctl_url "https://storage.googleapis.com/delco-experimental"
   --istioctl_url "https://storage.googleapis.com/delco-experimental/builds/master/0.4.1-20171115-all/"
