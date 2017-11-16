@@ -39,4 +39,4 @@ cd istio
   --pilot_hub "${HUB}"\
   --ca_tag "${TAG}"\
   --ca_hub "${HUB}"\
-  --istioctl_url "https://storage.googleapis.com/delco-experimental/pilot/${TAG}/artifacts/istioctl"
+  --istioctl_url "https://storage.googleapis.com/delco-experimental"
