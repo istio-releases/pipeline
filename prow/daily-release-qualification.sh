@@ -28,18 +28,15 @@ set -x
 
 # exports $HUB and $TAG
 source greenBuild.VERSION
+echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
-echo "mock testing"
-sleep 20
-echo "mock passing"
-
-# git clone https://github.com/istio/istio.git
-# cd istio
-# ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
-#   --mixer_tag "${TAG}"\
-#   --mixer_hub "${HUB}"\
-#   --pilot_tag "${TAG}"\
-#   --pilot_hub "${HUB}"\
-#   --ca_tag "${TAG}"\
-#   --ca_hub "${HUB}"\
-#   --istioctl_url "https://storage.googleapis.com/istio-artifacts/pilot/${TAG}/artifacts/istioctl"
+git clone https://github.com/istio/istio.git
+cd istio
+./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
+  --mixer_tag "${TAG}"\
+  --mixer_hub "${HUB}"\
+  --pilot_tag "${TAG}"\
+  --pilot_hub "${HUB}"\
+  --ca_tag "${TAG}"\
+  --ca_hub "${HUB}"\
+  --istioctl_url "https://storage.googleapis.com/istio-artifacts/pilot/${TAG}/artifacts/istioctl"
