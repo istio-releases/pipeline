@@ -32,13 +32,13 @@ echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
 gcloud docker -- pull gcr.io/delco-experimental/builds/master/0.4.1-20171115-all/istio-ca:0.4.1-20171115-all
 
-# git clone https://github.com/istio/istio.git
-# cd istio
-# ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
-#   --mixer_tag "${TAG}"\
-#   --mixer_hub "${HUB}"\
-#   --pilot_tag "${TAG}"\
-#   --pilot_hub "${HUB}"\
-#   --ca_tag "${TAG}"\
-#   --ca_hub "${HUB}"\
-#   --istioctl_url "https://storage.googleapis.com/delco-experimental/builds/master/${TAG}"
+git clone https://github.com/istio/istio.git
+cd istio
+./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
+  --mixer_tag "${TAG}"\
+  --mixer_hub "${HUB}"\
+  --pilot_tag "${TAG}"\
+  --pilot_hub "${HUB}"\
+  --ca_tag "${TAG}"\
+  --ca_hub "${HUB}"\
+  --istioctl_url "https://storage.googleapis.com/delco-experimental/builds/master/${TAG}"
