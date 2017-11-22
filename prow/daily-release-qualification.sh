@@ -30,6 +30,9 @@ set -x
 source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
+ISTIOCTL_URL="https://storage.googleapis.com/${PROJECT}/builds/master/${TAG}"
+echo "using ISTIOCTL_URL=${ISTIOCTL_URL}"
+
 git clone https://github.com/istio/istio.git
 cd istio
 ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
@@ -39,4 +42,4 @@ cd istio
   --pilot_hub "${HUB}"\
   --ca_tag "${TAG}"\
   --ca_hub "${HUB}"\
-  --istioctl_url "https://storage.googleapis.com/delco-experimental/builds/master/${TAG}"
+  --istioctl_url "${ISTIOCTL_URL}"

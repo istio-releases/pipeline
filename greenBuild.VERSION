@@ -2,5 +2,6 @@
 
 export HUB="gcr.io/laane-istio-dev"
 export TAG="0.3.22-20171122-9be57ee"
+export PROJECT="delco-experimental"
 # Timestamp allows rerun on the same artifacts
 export TIME=1511374510070184855
