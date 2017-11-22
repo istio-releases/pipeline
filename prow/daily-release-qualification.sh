@@ -28,7 +28,7 @@ set -x
 
 # exports $HUB and $TAG
 source greenBuild.VERSION
-echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
+echo "Using artifacts from HUB=${HUB} TAG=${TAG} PROJECT=${PROJECT}"
 
 ISTIOCTL_URL="https://storage.googleapis.com/${PROJECT}/builds/master/${TAG}"
 echo "using ISTIOCTL_URL=${ISTIOCTL_URL}"
