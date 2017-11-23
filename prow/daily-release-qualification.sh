@@ -26,12 +26,9 @@ set -u
 # Print commands
 set -x
 
-# exports $HUB and $TAG
+# exports $HUB, $TAG, and $GCS_PATH
 source greenBuild.VERSION
-echo "Using artifacts from HUB=${HUB} TAG=${TAG} PROJECT=${PROJECT}"
-
-ISTIOCTL_URL="https://storage.googleapis.com/${PROJECT}/build/${TAG}"
-echo "using ISTIOCTL_URL=${ISTIOCTL_URL}"
+echo "Using artifacts from HUB=${HUB} TAG=${TAG} GCS_PATH=${GCS_PATH}"
 
 git clone https://github.com/istio/istio.git
 cd istio
@@ -42,4 +39,4 @@ cd istio
   --pilot_hub "${HUB}"\
   --ca_tag "${TAG}"\
   --ca_hub "${HUB}"\
-  --istioctl_url "${ISTIOCTL_URL}"
+  --istioctl_url "${GCS_PATH}"
