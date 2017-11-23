@@ -30,7 +30,7 @@ set -x
 source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG} PROJECT=${PROJECT}"
 
-ISTIOCTL_URL="https://storage.googleapis.com/${PROJECT}/builds/master/${TAG}"
+ISTIOCTL_URL="https://storage.googleapis.com/${PROJECT}/build/${TAG}"
 echo "using ISTIOCTL_URL=${ISTIOCTL_URL}"
 
 git clone https://github.com/istio/istio.git
