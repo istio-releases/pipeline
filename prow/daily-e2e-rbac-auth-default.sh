@@ -26,4 +26,4 @@ set -u
 # Print commands
 set -x
 
-./prow/daily-e2e-rbac-auth --default_proxy
+./prow/daily-e2e-rbac-auth.sh --default_proxy
