@@ -26,4 +26,19 @@ set -u
 # Print commands
 set -x
 
-./prow/daily-e2e-rbac-no_auth --default_proxy
+git clone https://github.com/istio/istio.git
+cd istio
+
+source "./prow/cluster_lib.sh"
+
+trap delete_cluster EXIT
+create_cluster 'cluster-wide-auth'
+
+./tests/e2e.sh --auth_enable --cluster_wide "$@" \
+  --mixer_tag "${TAG}"\
+  --mixer_hub "${HUB}"\
+  --pilot_tag "${TAG}"\
+  --pilot_hub "${HUB}"\
+  --ca_tag "${TAG}"\
+  --ca_hub "${HUB}"\
+  --istioctl_url "${GCS_PATH}"
