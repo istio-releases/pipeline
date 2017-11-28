@@ -3,6 +3,6 @@
 export HUB="gcr.io/istio-testing"
 export TAG="0.3.0.0"
 export PROJECT="laane-istio-dev"
-export GCS_PATH="https://storage.googleapis.com/istio-prerelease/prerelease/0.3.0.0"
+export ISTIOCTL_URL="https://storage.googleapis.com/istio-prerelease/prerelease/0.3.0.0"
 # Timestamp allows rerun on the same artifacts
 export TIME=1511811402393679682
