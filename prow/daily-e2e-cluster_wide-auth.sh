@@ -26,8 +26,12 @@ set -u
 # Print commands
 set -x
 
-git clone https://github.com/istio/istio.git
+source greenBuild.VERSION
+git clone -n https://github.com/istio/istio.git
 cd istio
+ISTIO_SHA=`curl $ISTIOCTL_URL/manifest.xml | grep istio/istio | cut -f 6 -d \"`
+git checkout $ISTIO_SHA
+
 
 source "./prow/cluster_lib.sh"
 
