@@ -30,8 +30,11 @@ set -x
 source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_URL=${ISTIOCTL_URL}"
 
-git clone https://github.com/istio/istio.git
+git clone -n https://github.com/istio/istio.git
 cd istio
+ISTIO_SHA=`curl $ISTIOCTL_URL/manifest.xml | grep istio/istio | cut -f 6 -d \"`
+git checkout $ISTIO_SHA
+
 ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
   --mixer_tag "${TAG}"\
   --mixer_hub "${HUB}"\
