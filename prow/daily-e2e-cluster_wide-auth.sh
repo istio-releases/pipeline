@@ -41,4 +41,4 @@ create_cluster 'cluster-wide-auth'
   --pilot_hub "${HUB}"\
   --ca_tag "${TAG}"\
   --ca_hub "${HUB}"\
-  --istioctl_url "${GCS_PATH}"
+  --istioctl_url "${ISTIOCTL_URL}"
