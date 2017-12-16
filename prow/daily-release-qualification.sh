@@ -28,11 +28,13 @@ set -x
 
 # exports $HUB, $TAG, and $ISTIOCTL_URL
 source greenBuild.VERSION
+ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep istio/istio | cut -f 6 -d \"`
+[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
+
 echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_URL=${ISTIOCTL_URL}"
 
 git clone -n https://github.com/istio/istio.git
 cd istio
-ISTIO_SHA=`curl $ISTIOCTL_URL/manifest.xml | grep istio/istio | cut -f 6 -d \"`
 git checkout $ISTIO_SHA
 
 ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
