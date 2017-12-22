@@ -4,4 +4,4 @@ export HUB="gcr.io/laane-istio-dev"
 export TAG="0.4.1"
 export ISTIOCTL_URL="https://storage.googleapis.com/laane-istio-dev-builds/build/0.4.1/istioctl"
 # Timestamp allows rerun on the same artifacts
-export TIME=1513969041286541310
+export TIME=1513970518641725935
