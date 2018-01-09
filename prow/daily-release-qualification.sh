@@ -26,17 +26,36 @@ set -u
 # Print commands
 set -x
 
+export KUBECONFIG=${HOME}/.kube/config
+if [[ ${CI:-} == 'bootstrap' ]]; then
+  export KUBECONFIG=/home/bootstrap/.kube/config
+fi
+
 # exports $HUB, $TAG, and $ISTIOCTL_URL
 source greenBuild.VERSION
-ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep istio/istio | cut -f 6 -d \"`
-[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
-
 echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_URL=${ISTIOCTL_URL}"
 
+mkdir -p ${GOPATH}/src/istio.io
+cd ${GOPATH}/src/istio.io
 git clone -n https://github.com/istio/istio.git
 cd istio
+ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep istio/istio | cut -f 6 -d \"`
+[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 git checkout $ISTIO_SHA
 
+ISTIO_GO=$(cd $(dirname $0)/..; pwd)
+
+# Download envoy and go deps
+make init
+
+make generate_yaml
+mkdir -p ${GOPATH}/src/istio.io/istio/_artifacts
+# It seems logs are generated on tmp ?
+trap "cp -a /tmp/istio* ${GOPATH}/src/istio.io/istio/_artifacts" EXIT
+
+wget ${ISTIOCTL_URL}/istioctl-linux
+
+echo 'Running Integration Tests'
 ./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
   --mixer_tag "${TAG}"\
   --mixer_hub "${HUB}"\
