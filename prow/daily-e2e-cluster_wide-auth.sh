@@ -31,7 +31,7 @@ if [[ ${CI:-} == 'bootstrap' ]]; then
   export KUBECONFIG=/home/bootstrap/.kube/config
 fi
 
-# exports $HUB, $TAG, and $ISTIOCTL_URL
+# Exports $HUB, $TAG, and $ISTIOCTL_URL
 source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_URL=${ISTIOCTL_URL}"
 
@@ -48,15 +48,19 @@ source "./prow/cluster_lib.sh"
 trap delete_cluster EXIT
 create_cluster 'cluster-wide-auth'
 
-ISTIO_GO=$(cd $(dirname $0)/..; pwd)
-
 # Download envoy and go deps
 make init
 
-make generate_yaml
+# log gathering
 mkdir -p ${GOPATH}/src/istio.io/istio/_artifacts
-# It seems logs are generated on tmp ?
 trap "cp -a /tmp/istio* ${GOPATH}/src/istio.io/istio/_artifacts" EXIT
+
+# use uploaded yaml artifacts rather than the ones generated locally
+DAILY_BUILD=istio-$(echo ${ISTIOCTL_URL} | cut -d '/' -f 6)
+LINUX_DIST_URL=${ISTIOCTL_URL/istioctl/${DAILY_BUILD}-linux.tar.gz}
+wget $LINUX_DIST_URL
+tar -xzf ${DAILY_BUILD}-linux.tar.gz
+cp -R ${DAILY_BUILD}/install/* install/
 
 echo 'Running Integration Tests'
 ./tests/e2e.sh --auth_enable --cluster_wide "$@" \
