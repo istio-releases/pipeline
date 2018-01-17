@@ -59,11 +59,4 @@ tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
 
 echo 'Running Integration Tests'
-./tests/e2e.sh ${E2E_ARGS[@]:-} "$@" \
-  --mixer_tag "${TAG}"\
-  --mixer_hub "${HUB}"\
-  --pilot_tag "${TAG}"\
-  --pilot_hub "${HUB}"\
-  --ca_tag "${TAG}"\
-  --ca_hub "${HUB}"\
-  --istioctl_url "${ISTIOCTL_URL}"
+make e2e_all E2E_ARGS="--istioctl_url "${ISTIOCTL_URL}" "$@""
