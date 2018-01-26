@@ -58,5 +58,7 @@ wget $LINUX_DIST_URL
 tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
 
+ARTIFACTS_DIR="${GOPATH}/src/istio.io/istio/_artifacts"
+
 echo 'Running Integration Tests'
-make e2e_all E2E_ARGS="--istioctl_url "${ISTIOCTL_URL}" "$@""
+make e2e_all E2E_ARGS="--test_logs_path="${ARTIFACTS_DIR}" --istioctl_url "${ISTIOCTL_URL}" "$@""
