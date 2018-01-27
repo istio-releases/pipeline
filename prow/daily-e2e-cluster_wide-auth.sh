@@ -66,5 +66,6 @@ cp -R ${DAILY_BUILD}/install/* install/
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
-echo 'Running Integration Tests'
-make e2e_all E2E_ARGS="--istioctl_url "${ISTIOCTL_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@""
+echo 'Running E2E Tests'
+AGRS="--istioctl_url "${ISTIOCTL_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@""
+make e2e_all E2E_ARGS="${AGRS}"
