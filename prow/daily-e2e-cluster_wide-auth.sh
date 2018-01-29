@@ -33,7 +33,8 @@ fi
 
 # Exports $HUB, $TAG, and $ISTIOCTL_URL
 source greenBuild.VERSION
-echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_URL=${ISTIOCTL_URL}"
+ISTIOCTL_STAGE_URL=${ISTIOCTL_URL}-stage
+echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_STAGE_URL=${ISTIOCTL_STAGE_URL}"
 
 ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep -E "name=\"(([a-z]| -)*)/istio\"" | cut -f 6 -d \"`
 echo istio_sha: $ISTIO_SHA
@@ -67,5 +68,5 @@ cp -R ${DAILY_BUILD}/install/* install/
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 echo 'Running E2E Tests'
-AGRS="--istioctl_url "${ISTIOCTL_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@""
+AGRS="--istioctl_url "${ISTIOCTL_STAGE_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@""
 make e2e_all E2E_ARGS="${AGRS}"
