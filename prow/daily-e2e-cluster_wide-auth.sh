@@ -69,5 +69,18 @@ cp -R ${DAILY_BUILD}/install/* install/
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 echo 'Running E2E Tests'
-AGRS="--istioctl_url "${ISTIOCTL_STAGE_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@""
-make e2e_all E2E_ARGS="${AGRS}"
+ARGS=( --istioctl_url "${ISTIOCTL_STAGE_URL}" --test_logs_path="${ARTIFACTS_DIR}" --auth_enable --cluster_wide "$@" )
+
+EXTRA_E2E_ARGS=()
+EXTRA_E2E_ARGS+=( --mixer_tag="${TAG}" )
+EXTRA_E2E_ARGS+=( --pilot_tag="${TAG}" )
+EXTRA_E2E_ARGS+=( --proxy_tag="${TAG}" )
+EXTRA_E2E_ARGS+=( --ca_tag="${TAG}" )
+EXTRA_E2E_ARGS+=( --mixer_hub="${HUB}" )
+EXTRA_E2E_ARGS+=( --pilot_hub="${HUB}" )
+EXTRA_E2E_ARGS+=( --proxy_hub="${HUB}" )
+EXTRA_E2E_ARGS+=( --ca_hub="${HUB}" )
+
+go test -v -timeout 20m ./tests/e2e/tests/simple -args ${ARGS[@]} ${EXTRA_E2E_ARGS[@]}
+go test -v -timeout 20m ./tests/e2e/tests/mixer -args ${ARGS[@]} ${EXTRA_E2E_ARGS[@]}
+go test -v -timeout 20m ./tests/e2e/tests/bookinfo -args ${ARGS[@]} ${EXTRA_E2E_ARGS[@]}
