@@ -26,4 +26,4 @@ set -u
 # Print commands
 set -x
 
-./prow/daily-release-qualification.sh "$@"
+./prow/e2e-suite.sh

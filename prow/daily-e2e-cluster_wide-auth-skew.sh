@@ -34,8 +34,8 @@ ROOT=$(dirname $WD)
 source ${ROOT}/prow/lib.sh
 
 for p in ${PROXY_SKEW_TARGETS[@]}; do
-	echo "===== Testing with Proxy $p ====="
-	export PROXY_HUB="gcr.io/istio-io"
-	export PROXY_TAG="${p}"
-	${ROOT}/prow/daily-e2e-cluster_wide-auth.sh "$@"
+  echo "===== Testing with Proxy $p ====="
+  export PROXY_HUB="gcr.io/istio-io"
+  export PROXY_TAG="${p}"
+  ${ROOT}/prow/e2e-suite.sh --auth_enable --cluster_wide
 done
