@@ -43,8 +43,7 @@ FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 # Exports $HUB, $TAG, and $ISTIOCTL_URL
-ISTIOCTL_STAGE_URL=${ISTIOCTL_URL}-stage
-echo "Using artifacts from HUB=${HUB} TAG=${TAG} ISTIOCTL_STAGE_URL=${ISTIOCTL_STAGE_URL}"
+echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
 ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
@@ -67,6 +66,9 @@ trap cleanup EXIT
 # use uploaded yaml artifacts rather than the ones generated locally
 DAILY_BUILD=istio-$(echo ${ISTIOCTL_URL} | cut -d '/' -f 6)
 LINUX_DIST_URL=${ISTIOCTL_URL/istioctl/${DAILY_BUILD}-linux.tar.gz}
+#disable ISTIOCTL_URL
+unset ISTIOCTL_URL
+
 wget $LINUX_DIST_URL
 tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
@@ -78,7 +80,7 @@ echo 'Running E2E Tests'
 E2E_ARGS=(
   --ca_hub="${HUB}"
   --ca_tag="${TAG}"
-  --istioctl_url "${ISTIOCTL_STAGE_URL}"
+  --istioctl "${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
   --mason_info="${INFO_PATH}"
   --mixer_hub="${HUB}"
   --mixer_tag="${TAG}"
