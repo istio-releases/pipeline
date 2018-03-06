@@ -21,7 +21,7 @@ source in istio and infrastructure elsewhere.  The most critical file is the
 ```
 export HUB="gcr.io/laane-istio-dev"
 export TAG="0.5.0-pre20180122-20-31-00"
-export ISTIOCTL_URL="https://storage.googleapis.com/laane-istio-dev-builds/daily-build/0.5.0-pre20180122-20-31-00/istioctl"
+export ISTIO_REL_URL="https://storage.googleapis.com/laane-istio-dev-builds/daily-build/0.5.0-pre20180122-20-31-00/"
 export TIME=1517304965594224249
 ```
 

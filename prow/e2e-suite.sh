@@ -31,6 +31,9 @@ function cleanup() {
 }
 
 source greenBuild.VERSION
+# Exports $HUB, $TAG
+echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
+
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
 # for existing resources types
@@ -42,10 +45,7 @@ FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
-# Exports $HUB, $TAG, and $ISTIOCTL_URL
-echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
-
-ISTIO_SHA=`curl $ISTIOCTL_URL/../manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
+ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
 # Checkout istio at the greenbuild
@@ -64,12 +64,12 @@ make init
 trap cleanup EXIT
 
 # use uploaded yaml artifacts rather than the ones generated locally
-DAILY_BUILD=istio-$(echo ${ISTIOCTL_URL} | cut -d '/' -f 6)
-LINUX_DIST_URL=${ISTIOCTL_URL/istioctl/${DAILY_BUILD}-linux.tar.gz}
-#disable ISTIOCTL_URL
-unset ISTIOCTL_URL
+DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
+LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
+#disable ISTIO_REL_URL
+unset ISTIO_REL_URL
 
-wget $LINUX_DIST_URL
+wget -q $LINUX_DIST_URL
 tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
 
