@@ -41,11 +41,9 @@ RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
 OWNER='e2e-daily'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
-JUNIT_LOG="$(mktemp /tmp/XXXXX.junit.log)"
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
-JUNIT_XML=${ARTIFACTS_DIR}/junit_daily-release.xml
 
 ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
@@ -79,6 +77,7 @@ get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
 
 echo 'Running E2E Tests'
+# The --default_proxy flag overwrites both --proxy_hub  and --proxy_tag
 E2E_ARGS=(
   --ca_hub="${HUB}"
   --ca_tag="${TAG}"
@@ -93,10 +92,6 @@ E2E_ARGS=(
   --test_logs_path="${ARTIFACTS_DIR}"
 )
 
-# Run all tests regardless of exit status of previous command
-set +e
-# The --default_proxy flag overwrites both --proxy_hub  and --proxy_tag
-go test -v -timeout 20m ./tests/e2e/tests/simple -args ${E2E_ARGS[@]} "$@" >> ${JUNIT_LOG}
-go test -v -timeout 20m ./tests/e2e/tests/mixer -args ${E2E_ARGS[@]} "$@" >> ${JUNIT_LOG}
-go test -v -timeout 60m ./tests/e2e/tests/bookinfo -args ${E2E_ARGS[@]} "$@" >> ${JUNIT_LOG}
-go-junit-report < ${JUNIT_LOG} > ${JUNIT_XML}
+time E2E_ARGS="${E2E_ARGS[@]}" EXTRA_E2E_ARGS="$@" \
+  JUNIT_E2E_XML="${ARTIFACTS_DIR}/junit_daily-release.xml" \
+  make e2e_all
