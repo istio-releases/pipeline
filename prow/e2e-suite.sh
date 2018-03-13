@@ -66,6 +66,7 @@ trap cleanup EXIT
 # use uploaded yaml artifacts rather than the ones generated locally
 DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
+DEB_URL=${ISTIO_REL_URL}/deb
 #disable ISTIO_REL_URL
 unset ISTIO_REL_URL
 
@@ -81,6 +82,7 @@ echo 'Running E2E Tests'
 E2E_ARGS=(
   --ca_hub="${HUB}"
   --ca_tag="${TAG}"
+  --deb_url="${DEB_URL}"
   --istioctl "${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
   --mason_info="${INFO_PATH}"
   --mixer_hub="${HUB}"

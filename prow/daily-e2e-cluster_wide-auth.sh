@@ -27,4 +27,4 @@ set -u
 set -x
 
 
-./prow/e2e-suite.sh --auth_enable --cluster_wide
+./prow/e2e-suite.sh --auth_enable --cluster_wide --test_vm
