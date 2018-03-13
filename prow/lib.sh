@@ -14,8 +14,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-# Artifacts of proxy are named using SHA
-# Long term solution may be some translation between release tag and SHA
 export PROXY_SKEW_TARGETS=(
-	8f532a4a7af2bdb09b09ef49906538ee25bd578d  # 0.5.1
+	0.5.1
 )
