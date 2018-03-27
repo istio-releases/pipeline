@@ -30,11 +30,5 @@ WD=$(dirname $0)
 WD=$(cd $WD; pwd)
 ROOT=$(dirname $WD)
 
-# Export PROXY_SKEW_TARGETS
-source ${ROOT}/prow/lib.sh
-
-for p in ${PROXY_SKEW_TARGETS[@]}; do
-  echo "===== Testing with Proxy $p ====="
-  export PROXY_SKEW_TAG="${p}"
-  ${ROOT}/prow/e2e-suite.sh --auth_enable --cluster_wide --test_vm
-done
+export E2E_TARGET="e2e_version_skew"
+${ROOT}/prow/e2e-suite.sh --auth_enable --cluster_wide --test_vm
