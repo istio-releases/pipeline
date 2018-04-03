@@ -97,4 +97,4 @@ E2E_ARGS=(
 E2E_TARGET=${E2E_TARGET:-e2e_all_junit_report}
 time E2E_ARGS="${E2E_ARGS[@]}" EXTRA_E2E_ARGS="$@" \
   JUNIT_E2E_XML="${ARTIFACTS_DIR}/junit_daily-release.xml" \
-  make e2e_all_junit_report
+  make ${E2E_TARGET}
