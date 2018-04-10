@@ -37,7 +37,7 @@ echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
 # for existing resources types
-RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
+RESOURCE_TYPE="${RESOURCE_TYPE:-gke-perf-preset}"
 OWNER='e2e-daily'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
