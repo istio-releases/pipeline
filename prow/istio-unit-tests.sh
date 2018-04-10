@@ -23,6 +23,10 @@ set -u
 set -x
 set -e
 
+source greenBuild.VERSION
+# Exports $HUB, $TAG
+echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
+
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
