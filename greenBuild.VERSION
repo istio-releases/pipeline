@@ -4,4 +4,4 @@ export HUB="gcr.io/istio"
 export TAG="fortestonly"
 export ISTIO_REL_URL="https://storage.googleapis.com/test"
 # Timestamp allows rerun on the same artifacts
-export TIME=1523557302719649704
+export TIME=1523557717755571646
