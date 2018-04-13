@@ -30,5 +30,5 @@ WD=$(dirname $0)
 WD=$(cd $WD; pwd)
 ROOT=$(dirname $WD)
 
-export E2E_TARGET="e2e_version_skew"
+export E2E_TARGET="e2e_version_skew_run"
 ${ROOT}/prow/e2e-suite.sh --auth_enable
