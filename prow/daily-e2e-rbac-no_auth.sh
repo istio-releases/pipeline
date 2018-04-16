@@ -26,4 +26,4 @@ set -u
 # Print commands
 set -x
 
-./prow/e2e-suite.sh
+./prow/e2e-suite.sh --cluster_wide --test_vm
