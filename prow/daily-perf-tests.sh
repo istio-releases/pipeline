@@ -21,19 +21,18 @@ set -u
 # Print commands
 set -x
 
+BASE_DIR=$PWD
 
 function cleanup() {
-  # log gathering
-  cp -a /tmp/istio* ${ARTIFACTS_DIR}
   # Mason cleanup
   mason_cleanup
   cat "${FILE_LOG}"
+  cat "${PERF_LOG}"
 }
 
 source greenBuild.VERSION
 # Exports $HUB, $TAG
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
-
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
 # for existing resources types
@@ -58,9 +57,6 @@ git checkout $ISTIO_SHA
 source "prow/mason_lib.sh"
 source "prow/cluster_lib.sh"
 
-# Download envoy and go deps
-make init
-
 trap cleanup EXIT
 
 # use uploaded yaml artifacts rather than the ones generated locally
@@ -74,23 +70,71 @@ wget -q $LINUX_DIST_URL
 tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
 
+export ISTIOCTL="${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
+
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
 
-echo 'Running E2E Tests'
-# The --default_proxy flag overwrites both --proxy_hub  and --proxy_tag
-E2E_ARGS=(
-  --ca_hub="${HUB}"
-  --ca_tag="${TAG}"
-  --deb_url="${DEB_URL}"
-  --istioctl "${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
-  --mason_info="${INFO_PATH}"
-  --mixer_hub="${HUB}"
-  --mixer_tag="${TAG}"
-  --pilot_hub="${HUB}"
-  --pilot_tag="${TAG}"
-  --proxy_hub="${HUB}"
-  --proxy_tag="${PROXY_SKEW_TAG:-${TAG}}"
-  --test_logs_path="${ARTIFACTS_DIR}"
-)
+# istio-boskos-perf-03:
+#   clusters:
+#   - name: gke-041318-8zy1mr91wc
+#     zone: us-central1-f
+#   vms:
+#   - name: gce-041318-lyiq9usadh
+#     zone: us-central1-f
+function export_perf_variables() {
+  local PROJECT_INFO=$1
+  export PROJECT=`     grep perf- $PROJECT_INFO      | cut -f 1 -d : `
+  [[ -z "${PROJECT}"  ]] && echo "error could not parse project" && exit 11
 
+  export CLUSTER_NAME=`grep  gke- $PROJECT_INFO      | cut -f 2 -d : | sed 's/ //g' `
+  [[ -z "${CLUSTER_NAME}"  ]] && echo "error could not parse cluster name" && exit 12
+
+  export VM_NAME=`     grep  gce- $PROJECT_INFO      | cut -f 2 -d : | sed 's/ //g' `
+  [[ -z "${VM_NAME}"  ]] && echo "error could not parse vm name" && exit 13
+
+  export ZONE=`        grep  zone $PROJECT_INFO -m 1 | cut -f 2 -d : | sed 's/ //g' `
+  [[ -z "${VM_NAME}"  ]] && echo "error could not parse vm name" && exit 13
+
+  export TOOLS_DIR="${PWD}/tools"
+
+  ISTIOCTL=${ISTIOCTL:-bin/istioctl}
+  export ISTIOCTL
+
+  echo $PROJECT $CLUSTER_NAME $VM_NAME $ZONE $ISTIOCTL $TOOLS_DIR
+}
+
+unset IFS
+export_perf_variables $INFO_PATH
+QPS=-1
+source "tools/setup_perf_cluster.sh"
+
+function install_perf_and_test() {
+  # setup VM
+  update_gcp_opts
+  setup_vm
+  setup_vm_firewall
+  update_fortio_on_vm
+  run_fortio_on_vm
+
+  # setup cluster
+  kubectl_setup
+  install_non_istio_svc
+  setup_non_istio_ingress
+  setup_istio_all
+
+  get_ips
+  VERSION="" # reset in case it changed
+  TS="" # reset once per set
+  QPS=-1
+  run_4_tests
+  QPS=400
+  TS="" # reset once per set
+  run_4_tests
+}
+
+PERF_LOG="$(mktemp /tmp/XXXXX.perf.log)" 
+install_perf_and_test -s 2>&1 > $PERF_LOG
+
+ls
+gsutil -m cp qps* gs://fortio-data/daily.releases/data/
