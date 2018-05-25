@@ -4,4 +4,4 @@ export HUB="gcr.io/istio-release"
 export TAG="master-20180525-03-22"
 export ISTIO_REL_URL="https://storage.googleapis.com/istio-release-pipeline-data/daily-build/master-20180525-03-22"
 # Timestamp allows rerun on the same artifacts
-export TIME=1527219572999957933
+export TIME=1527268982143189630
