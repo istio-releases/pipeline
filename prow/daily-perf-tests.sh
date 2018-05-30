@@ -66,9 +66,22 @@ DEB_URL=${ISTIO_REL_URL}/deb
 #disable ISTIO_REL_URL
 unset ISTIO_REL_URL
 
+echo core account is
+gcloud config get-value core/account
+
 wget -q $LINUX_DIST_URL
 tar -xzf ${DAILY_BUILD}-linux.tar.gz
 cp -R ${DAILY_BUILD}/install/* install/
+
+wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
+tar -xvf helm-v2.9.1-linux-amd64.tar.gz
+linux-amd64/helm template --set sidecarInjectorWebhook.enabled=false \
+   --set global.proxy.image=proxy --namespace istio-system \
+   --values install/kubernetes/helm/istio/values-istio-auth.yaml \
+   install/kubernetes/helm/istio > install/kubernetes/istio-auth.yaml
+cat  install/kubernetes/istio-auth.yaml
+
+
 
 export ISTIOCTL="${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
 
@@ -108,6 +121,18 @@ unset IFS
 export_perf_variables $INFO_PATH
 QPS=-1
 source "tools/setup_perf_cluster.sh"
+update_gcp_opts
+kubectl_setup
+
+NAMESP_FILE="$(mktemp /tmp/XXXXX.namespace.yaml)"
+cat > $NAMESP_FILE <<- EOM
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+EOM
+kubectl create -f $NAMESP_FILE
+
 
 function install_perf_and_test() {
   # setup VM
