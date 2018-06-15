@@ -30,10 +30,10 @@ function cleanup() {
   cat "${FILE_LOG}"
 }
 
-source greenBuild.VERSION
 # Exports $HUB, $TAG
+source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
-
+source prow/lib.sh
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
 # for existing resources types
@@ -63,15 +63,22 @@ make init
 
 trap cleanup EXIT
 
-# use uploaded yaml artifacts rather than the ones generated locally
-DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
-LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
-DEB_URL=${ISTIO_REL_URL}/deb
-#disable ISTIO_REL_URL
-unset ISTIO_REL_URL
+# Download release artifacts
+export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
+RELEASE_LINUX_DIST_URL=${ISTIO_REL_URL}/docker.io/${DAILY_BUILD}-linux.tar.gz
+EXPECTED_RELEASE_HUB=${EXPECTED_RELEASE_HUB:-"Hub: docker.io/istio"}
+download_untar_istio_assert_istioctl_version "${RELEASE_LINUX_DIST_URL}" "${EXPECTED_RELEASE_HUB}"
+# Clean release artifacts and proceed testing with TESTONLY/debug ones
+rm -rf ${DAILY_BUILD} ${DAILY_BUILD}-linux.tar.gz
 
-wget -q $LINUX_DIST_URL
-tar -xzf ${DAILY_BUILD}-linux.tar.gz
+# Download TESTONLY artifacts
+TESTONLY_LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
+DEB_URL=${ISTIO_REL_URL}/deb
+# Disable ISTIO_REL_URL
+unset ISTIO_REL_URL
+EXPECTED_TESTONLY_HUB=${EXPECTED_TESTONLY_HUB:-"Hub: gcr.io/istio-release"}
+download_untar_istio_assert_istioctl_version "${TESTONLY_LINUX_DIST_URL}" "${EXPECTED_TESTONLY_HUB}"
+# Use downloaded yaml artifacts rather than the ones generated locally
 cp -R ${DAILY_BUILD}/install/* install/
 
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"

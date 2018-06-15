@@ -14,6 +14,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-export PROXY_SKEW_TARGETS=(
-	0.5.1
-)
+function download_untar_istio_assert_istioctl_version() {
+	local url=$1
+	local expected_hub=$2
+	wget -q ${url}
+	tar -xzf ${DAILY_BUILD}-linux.tar.gz
+
+	local ISTIOCTL_BIN="${DAILY_BUILD}/bin/istioctl"
+	local ISTIOCTL_HUB=$(${ISTIOCTL_BIN} version | grep Hub)
+	# Assert hub from `istioctl version` points to ${expected_hub}
+	[ "${ISTIOCTL_HUB}" == "${expected_hub}" ]
+}
