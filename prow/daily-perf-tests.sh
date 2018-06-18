@@ -133,6 +133,25 @@ metadata:
 EOM
 kubectl create -f $NAMESP_FILE
 
+function wait_istio_up() {
+  for namespace in $(kubectl get namespaces --no-headers -o name); do
+    for name in $(kubectl get deployment -o name -n ${namespace}); do 
+      kubectl -n ${namespace} rollout status ${name} -w;
+    done
+  done
+}
+
+function setup_istio_all_daily_override() {
+  update_gcp_opts
+  install_istio
+  install_istio_svc
+  wait_istio_up #wait
+  install_istio_ingress_rules
+  install_istio_cache_busting_rule
+  install_istio_addons
+  wait_istio_up #wait
+  setup_istio_addons_ingress
+}
 
 function install_perf_and_test() {
   # setup VM
@@ -146,7 +165,8 @@ function install_perf_and_test() {
   kubectl_setup
   install_non_istio_svc
   setup_non_istio_ingress
-  setup_istio_all
+#  setup_istio_all TODO
+  setup_istio_all_daily_override
 
   get_ips
   VERSION="" # reset in case it changed
@@ -158,8 +178,10 @@ function install_perf_and_test() {
   run_4_tests
 }
 
+set +e
 PERF_LOG="$(mktemp /tmp/XXXXX.perf.log)" 
 install_perf_and_test -s 2>&1 > $PERF_LOG
+set -e
 
-ls
+pwd;ls
 gsutil -m cp qps* gs://fortio-data/daily.releases/data/
