@@ -141,6 +141,14 @@ function wait_istio_up() {
   done
 }
 
+function test_pods_up() {
+  not_running=`kubectl get pods --all-namespaces --no-headers | grep -v ^kube-system | grep -v "Running   0 " | wc -l`
+  if [[ "${not_running}" != "0" ]]; then
+     kubectl get pods --all-namespaces | grep -v ^kube-system
+     exit 4
+  fi
+}
+
 function setup_istio_all_daily_override() {
   update_gcp_opts
   install_istio
@@ -178,10 +186,9 @@ function install_perf_and_test() {
   run_4_tests
 }
 
-set +e
 PERF_LOG="$(mktemp /tmp/XXXXX.perf.log)" 
 install_perf_and_test -s 2>&1 > $PERF_LOG
-set -e
+test_pods_up
 
 pwd;ls
 gsutil -m cp qps* gs://fortio-data/daily.releases/data/
