@@ -27,4 +27,4 @@ set -u
 set -x
 
 export E2E_TARGET="e2e_mixer"
-./prow/e2e-suite.sh
+./prow/e2e-suite.sh --default_proxy

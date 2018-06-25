@@ -27,4 +27,4 @@ set -u
 set -x
 
 export E2E_TARGET="e2e_simple"
-./prow/e2e-suite.sh --auth_enable --installer helm
+./prow/e2e-suite.sh --auth_enable --default_proxy --installer helm

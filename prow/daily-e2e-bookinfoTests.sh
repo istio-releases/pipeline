@@ -27,4 +27,4 @@ set -u
 set -x
 
 export E2E_TARGET="e2e_bookinfo_envoyv2_v1alpha3"
-./prow/e2e-suite.sh
+./prow/e2e-suite.sh --default_proxy
