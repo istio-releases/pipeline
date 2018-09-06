@@ -46,6 +46,7 @@ ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
+export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io
@@ -61,6 +62,7 @@ source "prow/cluster_lib.sh"
 make init
 
 trap cleanup EXIT
+
 
 function assert_istioctl_version() {
 	local url=$1
