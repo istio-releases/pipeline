@@ -63,21 +63,29 @@ make init
 
 trap cleanup EXIT
 
-# Download release artifacts
-export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
-RELEASE_LINUX_DIST_URL=${ISTIO_REL_URL}/docker.io/${DAILY_BUILD}-linux.tar.gz
-EXPECTED_RELEASE_HUB=${EXPECTED_RELEASE_HUB:-"Hub: docker.io/istio"}
-download_untar_istio_assert_istioctl_version "${RELEASE_LINUX_DIST_URL}" "${EXPECTED_RELEASE_HUB}"
-# Clean release artifacts and proceed testing with TESTONLY/debug ones
-rm -rf ${DAILY_BUILD} ${DAILY_BUILD}-linux.tar.gz
+function assert_istioctl_version() {
+	local url=$1
+	local expected_hub=$2
+	local ISTIOCTL_BIN="${DAILY_BUILD}/bin/istioctl"
+	local ISTIOCTL_HUB=$(${ISTIOCTL_BIN} version | grep Hub)
+	# Assert hub from `istioctl version` points to ${expected_hub}
+	[ "${ISTIOCTL_HUB}" == "${expected_hub}" ]
+}
 
-# Download TESTONLY artifacts
-TESTONLY_LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
-DEB_URL=${ISTIO_REL_URL}/deb
-# Disable ISTIO_REL_URL
-unset ISTIO_REL_URL
-EXPECTED_TESTONLY_HUB=${EXPECTED_TESTONLY_HUB:-"Hub: gcr.io/istio-release"}
-download_untar_istio_assert_istioctl_version "${TESTONLY_LINUX_DIST_URL}" "${EXPECTED_TESTONLY_HUB}"
+function download_untar_istio_linux_tar() {
+  # Download artifacts
+  LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
+  DEB_URL=${ISTIO_REL_URL}/deb
+  # Disable ISTIO_REL_URL
+  unset ISTIO_REL_URL
+  EXPECTED_HUB=${EXPECTED_HUB:-"Hub: gcr.io/istio-release"}
+  #download_untar_istio_assert_istioctl_version "${LINUX_DIST_URL}" "${EXPECTED_HUB}"
+
+  wget  -q "${LINUX_DIST_URL}"
+  tar -xzf "${DAILY_BUILD}-linux.tar.gz"
+}
+
+download_untar_istio_linux_tar
 # Use downloaded yaml artifacts rather than the ones generated locally
 cp -R ${DAILY_BUILD}/install/* install/
 
