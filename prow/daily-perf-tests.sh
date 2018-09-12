@@ -55,8 +55,7 @@ function get_istio_code() {
   # Checkout istio at the greenbuild
   mkdir -p ${GOPATH}/src/istio.io
   pushd ${GOPATH}/src/istio.io
-# git clone https://github.com/istio/istio.git --depth 1 #KPTD
-  git clone https://github.com/morvencao/istio.git --depth 1 -b br_perf_istio_test
+  git clone https://github.com/istio/istio.git --depth 1
   pushd istio
 # git checkout $ISTIO_SHA #KPTD
 
