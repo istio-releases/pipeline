@@ -23,6 +23,14 @@ set -u
 set -x
 set -e
 
+function download_untar_istio_linux_tar() {
+  # Download artifacts
+  LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
+
+  wget  -q "${LINUX_DIST_URL}"
+  tar -xzf "${DAILY_BUILD}-linux.tar.gz"
+}
+
 source greenBuild.VERSION
 # Exports $HUB, $TAG
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
@@ -30,7 +38,11 @@ echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
-ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
+export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
+download_untar_istio_linux_tar
+"./$DAILY_BUILD/bin/istioctl" version
+
+ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | sed 's/,/\n/g'  | sed 's/"/ /g' | sed 's/^ //'| grep GitRevision | cut -f 2 -d " ")
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
 # Checkout istio at the greenbuild
