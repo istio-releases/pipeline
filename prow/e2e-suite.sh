@@ -77,21 +77,22 @@ ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | sed 's/,/\n/g'  | sed 's/"/
 mkdir -p ${GOPATH}/src/istio.io
 pushd    ${GOPATH}/src/istio.io
 git clone -n https://github.com/istio/istio.git
+
 pushd istio
-  git checkout $ISTIO_SHA
-  source "prow/mason_lib.sh"
-  source "prow/cluster_lib.sh"
-  trap cleanup EXIT
+#from now on we are in ${GOPATH}/src/istio.io/istio dir
 
-  # Download envoy and go deps
-  make init
-popd
+git checkout $ISTIO_SHA
+source "prow/mason_lib.sh"
+source "prow/cluster_lib.sh"
+trap cleanup EXIT
 
+# Download envoy and go deps
+make init
 
+download_untar_istio_linux_tar
 # Use downloaded yaml artifacts rather than the ones generated locally
-cp -R ${DAILY_BUILD}/install/* istio/install/
+cp -R ${DAILY_BUILD}/install/* install/
 
-pushd istio
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
 
