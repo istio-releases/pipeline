@@ -68,7 +68,9 @@ ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 download_untar_istio_linux_tar
-ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | grep GitRevision | cut -f 2 -d " ")
+"./$DAILY_BUILD/bin/istioctl"
+
+ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | grep GitRevision | cut -f 2 -d ":")
 [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
 # Checkout istio at the greenbuild
