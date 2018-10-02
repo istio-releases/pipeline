@@ -43,8 +43,6 @@ function download_untar_istio_linux_tar() {
   # Download artifacts
   LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
   DEB_URL=${ISTIO_REL_URL}/deb
-  # Disable ISTIO_REL_URL
-  unset ISTIO_REL_URL
   EXPECTED_HUB=${EXPECTED_HUB:-"Hub: gcr.io/istio-release"}
   #download_untar_istio_assert_istioctl_version "${LINUX_DIST_URL}" "${EXPECTED_HUB}"
 
