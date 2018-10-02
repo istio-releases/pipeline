@@ -30,40 +30,6 @@ function cleanup() {
   cat "${FILE_LOG}"
 }
 
-# Exports $HUB, $TAG
-source greenBuild.VERSION
-echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
-
-# Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
-# for existing resources types
-RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
-OWNER='e2e-daily'
-INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
-FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
-
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
-
-ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
-[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
-export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
-
-# Checkout istio at the greenbuild
-mkdir -p ${GOPATH}/src/istio.io
-pushd ${GOPATH}/src/istio.io
-git clone -n https://github.com/istio/istio.git
-pushd istio
-git checkout $ISTIO_SHA
-
-source "prow/mason_lib.sh"
-source "prow/cluster_lib.sh"
-
-# Download envoy and go deps
-make init
-
-trap cleanup EXIT
-
-
 function assert_istioctl_version() {
 	local url=$1
 	local expected_hub=$2
@@ -86,10 +52,44 @@ function download_untar_istio_linux_tar() {
   tar -xzf "${DAILY_BUILD}-linux.tar.gz"
 }
 
-download_untar_istio_linux_tar
-# Use downloaded yaml artifacts rather than the ones generated locally
-cp -R ${DAILY_BUILD}/install/* install/
+# Exports $HUB, $TAG
+source greenBuild.VERSION
+echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
+# Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
+# for existing resources types
+RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
+OWNER='e2e-daily'
+INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
+FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
+
+# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
+ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
+
+export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
+download_untar_istio_linux_tar
+ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | grep GitRevision | cut -f 2 -d " ")
+[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
+
+# Checkout istio at the greenbuild
+mkdir -p ${GOPATH}/src/istio.io
+pushd    ${GOPATH}/src/istio.io
+git clone -n https://github.com/istio/istio.git
+pushd istio
+  git checkout $ISTIO_SHA
+  source "prow/mason_lib.sh"
+  source "prow/cluster_lib.sh"
+  trap cleanup EXIT
+
+  # Download envoy and go deps
+  make init
+popd
+
+
+# Use downloaded yaml artifacts rather than the ones generated locally
+cp -R ${DAILY_BUILD}/install/* istio/install/
+
+pushd istio
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
 
