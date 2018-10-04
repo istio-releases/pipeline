@@ -50,7 +50,7 @@ function download_untar_istio_linux_tar() {
   tar -xzf "${DAILY_BUILD}-linux.tar.gz"
 }
 
-# Exports $HUB, $TAG
+# Exports $HUB, $TAG, $SHA
 source greenBuild.VERSION
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
@@ -65,11 +65,6 @@ FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
-download_untar_istio_linux_tar
-"./$DAILY_BUILD/bin/istioctl" version
-
-ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | sed 's/,/\n/g'  | sed 's/"/ /g' | sed 's/^ //'| grep GitRevision | cut -f 2 -d " ")
-[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io
@@ -79,7 +74,7 @@ git clone -n https://github.com/istio/istio.git
 pushd istio
 #from now on we are in ${GOPATH}/src/istio.io/istio dir
 
-git checkout $ISTIO_SHA
+git checkout $SHA
 source "prow/mason_lib.sh"
 source "prow/cluster_lib.sh"
 trap cleanup EXIT

@@ -24,8 +24,6 @@ set -x
 export SOURCE_VERSION=1.0.0
 
 function cleanup() {
-  # log gathering
-  cp -a /tmp/istio_upgrade_test/* ${ARTIFACTS_DIR}
   # Mason cleanup
   mason_cleanup
   cat "${FILE_LOG}"
@@ -48,7 +46,7 @@ function download_untar_istio_linux_source_release_tar() {
   tar -xzf "${SOURCE_RELEASE_BUILD}-linux.tar.gz"
 }
 
-# Exports $HUB, $TAG
+# Exports $HUB, $TAG, $SHA
 source greenBuild.VERSION
 echo "Testing Upgrade from ${HUB}/${SOURCE_VERSION} to ${HUB}/
 }"
@@ -60,14 +58,7 @@ OWNER='e2e-daily'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
-
 export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
-download_untar_istio_linux_target_release_tar
-
-ISTIO_SHA=$("./$DAILY_BUILD/bin/istioctl"  version | sed 's/,/\n/g'  | sed 's/"/ /g' | sed 's/^ //'| grep GitRevision | cut -f 2 -d " ")
-[[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io
@@ -77,9 +68,7 @@ git clone -n https://github.com/istio/istio.git
 pushd istio
 #from now on we are in ${GOPATH}/src/istio.io/istio dir
 
-#git checkout $ISTIO_SHA
-# Checkout a SHA that has test_crossgrade.sh for now.
-git checkout 717857374cc58fbff01476f8332fd8d04f69ca82
+git checkout $SHA
 
 source "prow/mason_lib.sh"
 source "prow/cluster_lib.sh"
