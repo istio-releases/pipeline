@@ -24,6 +24,9 @@ set -x
 export SOURCE_VERSION=1.0.0
 
 function cleanup() {
+  # log gathering
+  cp -a /tmp/istio_upgrade_test/* ${ARTIFACTS_DIR}
+
   # Mason cleanup
   mason_cleanup
   cat "${FILE_LOG}"
@@ -57,6 +60,10 @@ RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
 OWNER='e2e-daily'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
+
+# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
+ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
+
 
 export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 
