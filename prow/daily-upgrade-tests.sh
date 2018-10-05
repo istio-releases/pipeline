@@ -21,8 +21,6 @@ set -u
 # Print commands
 set -x
 
-export SOURCE_VERSION=1.0.0
-
 function cleanup() {
   # log gathering
   cp -a /tmp/istio_upgrade_test/* ${ARTIFACTS_DIR}
@@ -32,40 +30,35 @@ function cleanup() {
   cat "${FILE_LOG}"
 }
 
-function download_untar_istio_linux_target_release_tar() {
+function download_untar_istio_release() {
   # Download artifacts
-  LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
-  EXPECTED_HUB=${EXPECTED_HUB:-"Hub: gcr.io/istio-release"}
+  LINUX_DIST_URL="${1}/istio-${2}-linux.tar.gz"
 
   wget  -q "${LINUX_DIST_URL}"
-  tar -xzf "${DAILY_BUILD}-linux.tar.gz"
-}
-
-function download_untar_istio_linux_source_release_tar() {
-  # Download artifacts
-  LINUX_DIST_URL="https://github.com/istio/istio/releases/download/${SOURCE_VERSION}/istio-${SOURCE_VERSION}-linux.tar.gz"
-
-  wget  -q "${LINUX_DIST_URL}"
-  tar -xzf "${SOURCE_RELEASE_BUILD}-linux.tar.gz"
+  tar -xzf "${2}-linux.tar.gz"
 }
 
 # Exports $HUB, $TAG, $SHA
 source greenBuild.VERSION
-echo "Testing Upgrade from ${HUB}/${SOURCE_VERSION} to ${HUB}/
-}"
+
+export SOURCE_VERSION=1.0.0
+export SOURCE_RELEASE_PATH="https://github.com/istio/istio/releases/download/${SOURCE_VERSION}/"
+export TARGET_VERSION=${TAG}
+export TARGET_RELEASE_PATH=${ISTIO_REL_URL}
+
+
+echo "Testing Upgrade from ${HUB}/${SOURCE_VERSION} to ${HUB}/${TARGET_VERSION}"
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
 # for existing resources types
 RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
-OWNER='e2e-daily'
+OWNER='upgrade-tests'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
-
-export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io
@@ -81,9 +74,8 @@ source "prow/mason_lib.sh"
 source "prow/cluster_lib.sh"
 trap cleanup EXIT
 
-export SOURCE_RELEASE_BUILD=istio-${SOURCE_VERSION}
-download_untar_istio_linux_source_release_tar
-download_untar_istio_linux_target_release_tar
+download_untar_istio_release ${SOURCE_RELEASE_PATH} ${SOURCE_VERSION}
+download_untar_istio_release ${TARGET_RELEASE_PATH} ${TARGET_VERSION}
 
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
@@ -91,5 +83,5 @@ setup_cluster
 # Install fortio which is needed by the upgrade test.
 go get fortio.org/fortio
 
-./tests/upgrade/test_crossgrade.sh --from_hub=${HUB} --from_tag=${SOURCE_VERSION} --from_path=${SOURCE_RELEASE_BUILD} --to_hub=${HUB} --to_tag=${TAG} --to_path=${DAILY_BUILD}
+./tests/upgrade/test_crossgrade.sh --from_hub=${HUB} --from_tag=${SOURCE_VERSION} --from_path=istio-${SOURCE_VERSION} --to_hub=${HUB} --to_tag=${TARGET_VERSION} --to_path=istio-${TARGET_VERSION}
 
