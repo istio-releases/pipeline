@@ -57,6 +57,8 @@ make init
 
 echo 'Running Unit Tests'
 
+export KUBECONFIG=${GOPATH}/src/istio.io/istio/.circleci/config 
+  
 # Unit tests are run against a local apiserver and etcd.
 # Integration/e2e tests in the other scripts are run against GKE or real clusters.
 JUNIT_UNIT_TEST_XML="${ARTIFACTS_DIR}/junit_unit-tests.xml" \
