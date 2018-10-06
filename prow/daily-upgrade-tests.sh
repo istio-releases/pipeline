@@ -35,17 +35,8 @@ function download_untar_istio_release() {
   LINUX_DIST_URL="${1}/istio-${2}-linux.tar.gz"
 
   wget  -q "${LINUX_DIST_URL}"
-  tar -xzf "${2}-linux.tar.gz"
+  tar -xzf "istio-${2}-linux.tar.gz"
 }
-
-# Exports $HUB, $TAG, $SHA
-source greenBuild.VERSION
-
-export SOURCE_VERSION=1.0.0
-export SOURCE_RELEASE_PATH="https://github.com/istio/istio/releases/download/${SOURCE_VERSION}/"
-export TARGET_VERSION=${TAG}
-export TARGET_RELEASE_PATH=${ISTIO_REL_URL}
-
 
 echo "Testing Upgrade from ${HUB}/${SOURCE_VERSION} to ${HUB}/${TARGET_VERSION}"
 
@@ -68,7 +59,9 @@ git clone -n https://github.com/istio/istio.git
 pushd istio
 #from now on we are in ${GOPATH}/src/istio.io/istio dir
 
-git checkout $SHA
+#git checkout $SHA
+#Hack to use the latest test script for now.
+git checkout master
 
 source "prow/mason_lib.sh"
 source "prow/cluster_lib.sh"
