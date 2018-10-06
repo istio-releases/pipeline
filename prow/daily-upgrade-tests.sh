@@ -24,19 +24,13 @@ set -x
 function cleanup() {
   # log gathering
   cp -a /tmp/istio_upgrade_test/* ${ARTIFACTS_DIR}
-
   # Mason cleanup
   mason_cleanup
   cat "${FILE_LOG}"
 }
 
-function download_untar_istio_release() {
-  # Download artifacts
-  LINUX_DIST_URL="${1}/istio-${2}-linux.tar.gz"
-
-  wget  -q "${LINUX_DIST_URL}"
-  tar -xzf "istio-${2}-linux.tar.gz"
-}
+# Helper functions
+source "prow/utils.sh"
 
 echo "Testing Upgrade from ${HUB}/${SOURCE_VERSION} to ${HUB}/${TARGET_VERSION}"
 
@@ -46,10 +40,6 @@ RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
 OWNER='upgrade-tests'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
-
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
-
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io

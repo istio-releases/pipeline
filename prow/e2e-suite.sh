@@ -21,7 +21,6 @@ set -u
 # Print commands
 set -x
 
-
 function cleanup() {
   # log gathering
   cp -a /tmp/istio* ${ARTIFACTS_DIR}
@@ -30,28 +29,11 @@ function cleanup() {
   cat "${FILE_LOG}"
 }
 
-function assert_istioctl_version() {
-	local url=$1
-	local expected_hub=$2
-	local ISTIOCTL_BIN="${DAILY_BUILD}/bin/istioctl"
-	local ISTIOCTL_HUB=$(${ISTIOCTL_BIN} version | grep Hub)
-	# Assert hub from `istioctl version` points to ${expected_hub}
-	[ "${ISTIOCTL_HUB}" == "${expected_hub}" ]
-}
-
-function download_untar_istio_linux_tar() {
-  # Download artifacts
-  LINUX_DIST_URL=${ISTIO_REL_URL}/${DAILY_BUILD}-linux.tar.gz
-  DEB_URL=${ISTIO_REL_URL}/deb
-  EXPECTED_HUB=${EXPECTED_HUB:-"Hub: gcr.io/istio-release"}
-  #download_untar_istio_assert_istioctl_version "${LINUX_DIST_URL}" "${EXPECTED_HUB}"
-
-  wget  -q "${LINUX_DIST_URL}"
-  tar -xzf "${DAILY_BUILD}-linux.tar.gz"
-}
-
+# Helper functions
+source "prow/utils.sh"
 # Exports $HUB, $TAG, $SHA
 source greenBuild.VERSION
+
 echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
 # Check https://github.com/istio/test-infra/blob/master/boskos/configs.yaml
@@ -60,11 +42,6 @@ RESOURCE_TYPE="${RESOURCE_TYPE:-gke-e2e-test}"
 OWNER='e2e-daily'
 INFO_PATH="$(mktemp /tmp/XXXXX.boskos.info)"
 FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
-
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
-
-export DAILY_BUILD=istio-$(echo ${ISTIO_REL_URL} | cut -d '/' -f 6)
 
 # Checkout istio at the greenbuild
 mkdir -p ${GOPATH}/src/istio.io
@@ -82,9 +59,10 @@ trap cleanup EXIT
 # Download envoy and go deps
 make init
 
-download_untar_istio_linux_tar
+download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
+
 # Use downloaded yaml artifacts rather than the ones generated locally
-cp -R ${DAILY_BUILD}/install/* install/
+cp -R istio-${TAG}/install/* install/
 
 get_resource "${RESOURCE_TYPE}" "${OWNER}" "${INFO_PATH}" "${FILE_LOG}"
 setup_cluster
@@ -94,8 +72,8 @@ echo 'Running E2E Tests'
 E2E_ARGS=(
   --ca_hub="${HUB}"
   --ca_tag="${TAG}"
-  --deb_url="${DEB_URL}"
-  --istioctl "${GOPATH}/src/istio.io/istio/${DAILY_BUILD}/bin/istioctl"
+  --deb_url=${ISTIO_REL_URL}/deb
+  --istioctl "${GOPATH}/src/istio.io/istio/istio-${TAG}/bin/istioctl"
   --mason_info="${INFO_PATH}"
   --mixer_hub="${HUB}"
   --mixer_tag="${TAG}"
