@@ -31,13 +31,13 @@ source "greenBuild.VERSION"
 download_untar_istio_release "${ISTIO_REL_URL}/docker.io" "${TAG}" docker.io
 hub=$(docker.io/istio-${TAG}/bin/istioctl version | grep -oP 'Hub:"\K.*?(?=")')
 tag=$(docker.io/istio-${TAG}/bin/istioctl version | grep -oP '{Version:"\K.*?(?=")')
-[ "${hub}" == "${HUB}" ]
+[ "${hub}" == "docker.io/istio" ]
 [ "${tag}" == "${TAG}" ]
 
 download_untar_istio_release "${ISTIO_REL_URL}/gcr.io" "${TAG}" gcr.io
 hub=$(gcr.io/istio-${TAG}/bin/istioctl version | grep -oP 'Hub:"\K.*?(?=")')
 tag=$(gcr.io/istio-${TAG}/bin/istioctl version | grep -oP '{Version:"\K.*?(?=")')
-[ "${hub}" == "${HUB}" ]
+[ "${hub}" == "gcr.io/istio-release" ]
 [ "${tag}" == "${TAG}" ]
 
 download_untar_istio_release "${ISTIO_REL_URL}" "${TAG}"
