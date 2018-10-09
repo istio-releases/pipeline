@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2017 Istio Authors
+# Copyright 2018 Istio Authors
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -26,5 +26,10 @@ set -u
 # Print commands
 set -x
 
-export E2E_TARGET="e2e_simple"
-./prow/e2e-suite.sh --auth_enable --default_proxy --installer helm
+source "prow/utils.sh"
+
+e2e_setup
+
+# Run the corresponding test in istio source code.
+./prow/e2e-simpleTests.sh
+

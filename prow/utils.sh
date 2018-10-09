@@ -14,9 +14,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
+# Export $TAG, $HUB etc which are needed by the following functions.
+source "greenBuild.VERSION"
 
+# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
+ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
+
+# Download and unpack istio release artifacts
 function download_untar_istio_release() {
   local url_path=${1}
   local tag=${2}
@@ -26,6 +30,30 @@ function download_untar_istio_release() {
 
   wget  -q "${LINUX_DIST_URL}" -P "${dir}"
   tar -xzf "${dir}/istio-${tag}-linux.tar.gz" -C "${dir}"
+
+  export ISTIOCTL_BIN="${GOPATH}/src/istio.io/istio/istio-${TAG}/bin/istioctl"
 }
 
+# Get istio source code at the $SHA given by greenBuild.VERSION.
+function git_clone_istio() {
+  # Checkout istio at the greenbuild
+  mkdir -p ${GOPATH}/src/istio.io
+  pushd    ${GOPATH}/src/istio.io
+
+  git clone -n https://github.com/istio/istio.git
+  pushd istio
+
+  #from now on we are in ${GOPATH}/src/istio.io/istio dir
+  git checkout $SHA
+}
+
+# Set up e2e tests for release qualification
+function e2e_setup() {
+  git_clone_istio
+
+  download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
+
+  # Use downloaded yaml artifacts rather than the ones generated locally
+  cp -R istio-${TAG}/install/* install/
+}
 
