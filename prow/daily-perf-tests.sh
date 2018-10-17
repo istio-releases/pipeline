@@ -49,6 +49,7 @@ function get_istio_code() {
   FILE_LOG="$(mktemp /tmp/XXXXX.boskos.log)"
 
 
+  echo "Using release url: ${ISTIO_REL_URL}"
   ISTIO_SHA=`curl $ISTIO_REL_URL/manifest.xml | grep -E "name=\"(([a-z]|-)*)/istio\"" | cut -f 6 -d \"`
   [[ -z "${ISTIO_SHA}"  ]] && echo "error need to test with specific SHA" && exit 1
 
