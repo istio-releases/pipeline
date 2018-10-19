@@ -26,23 +26,50 @@ source "prow/utils.sh"
 # import HUB, TAG, SHA, etc.
 source "greenBuild.VERSION"
 
+
+function test_istioctl_version() {
+  local istioctl_bin=${1}
+  local expected_hub=${2}
+  local expected_tag=${3}
+
+  hub=$(${istioctl_bin} version | grep -oP 'Hub:"\K.*?(?=")')
+  tag=$(${istioctl_bin} version | grep -oP '{Version:"\K.*?(?=")')
+  [ "${hub}" == "${expected_hub}" ]
+  [ "${tag}" == "${expected_tag}" ]
+}
+
+function test_helm_files() {
+  local istio_path=${1}
+  local expected_hub=${2}
+  local expected_tag=${3}
+
+  grep tag  ${istio_path}/install/kubernetes/helm/istio/values.yaml
+  grep hub  ${istio_path}/install/kubernetes/helm/istio/values.yaml
+
+  hub=$(grep hub: ${istio_path}/install/kubernetes/helm/istio/values.yaml | head -n 1 | cut -c 8-)
+  tag=$(grep tag: ${istio_path}/install/kubernetes/helm/istio/values.yaml | head -n 1 | cut -c 8-)
+  [ "${hub}" == "${expected_hub}" ]
+  [ "${tag}" == "${expected_tag}" ]
+
+  hub=$(grep hub: ${istio_path}/install/kubernetes/helm/istio-remote/values.yaml | head -n 1 | cut -c 8-)
+  tag=$(grep tag: ${istio_path}/install/kubernetes/helm/istio-remote/values.yaml | head -n 1 | cut -c 8-)
+  [ "${hub}" == "${expected_hub}" ]
+  [ "${tag}" == "${expected_tag}" ]
+}
+
+
+
 # Assert HUB and TAG are matching from all istioctl binaries.
 
 download_untar_istio_release "${ISTIO_REL_URL}/docker.io" "${TAG}" docker.io
-hub=$(docker.io/istio-${TAG}/bin/istioctl version | grep -oP 'Hub:"\K.*?(?=")')
-tag=$(docker.io/istio-${TAG}/bin/istioctl version | grep -oP '{Version:"\K.*?(?=")')
-[ "${hub}" == "docker.io/istio" ]
-[ "${tag}" == "${TAG}" ]
+test_istioctl_version docker.io/istio-${TAG}/bin/istioctl "docker.io/istio" "${TAG}"
+test_helm_files docker.io/istio-${TAG} "docker.io/istio" "${TAG}"
 
 download_untar_istio_release "${ISTIO_REL_URL}/gcr.io" "${TAG}" gcr.io
-hub=$(gcr.io/istio-${TAG}/bin/istioctl version | grep -oP 'Hub:"\K.*?(?=")')
-tag=$(gcr.io/istio-${TAG}/bin/istioctl version | grep -oP '{Version:"\K.*?(?=")')
-[ "${hub}" == "gcr.io/istio-release" ]
-[ "${tag}" == "${TAG}" ]
+test_istioctl_version gcr.io/istio-${TAG}/bin/istioctl "gcr.io/istio-release" "${TAG}"
+test_helm_files gcr.io/istio-${TAG} "${HUB}" "${TAG}"
 
 download_untar_istio_release "${ISTIO_REL_URL}" "${TAG}"
-hub=$(istio-${TAG}/bin/istioctl version | grep -oP 'Hub:"\K.*?(?=")')
-tag=$(istio-${TAG}/bin/istioctl version | grep -oP '{Version:"\K.*?(?=")')
-[ "${hub}" == "${HUB}" ]
-[ "${tag}" == "${TAG}" ]
+test_istioctl_version istio-${TAG}/bin/istioctl "${HUB}" "${TAG}"
+test_helm_files istio-${TAG} "${HUB}" "${TAG}"
 
