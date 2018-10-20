@@ -61,14 +61,6 @@ function test_helm_files() {
 
 # Assert HUB and TAG are matching from all istioctl binaries.
 
-download_untar_istio_release "${ISTIO_REL_URL}/docker.io" "${TAG}" docker.io
-test_istioctl_version docker.io/istio-${TAG}/bin/istioctl "docker.io/istio"  "${TAG}"
-test_helm_files docker.io/istio-${TAG} "${HUB}" "${TAG}"
-
-download_untar_istio_release "${ISTIO_REL_URL}/gcr.io" "${TAG}" gcr.io
-test_istioctl_version gcr.io/istio-${TAG}/bin/istioctl "gcr.io/istio-release" "${TAG}"
-test_helm_files gcr.io/istio-${TAG} "${HUB}" "${TAG}"
-
 download_untar_istio_release "${ISTIO_REL_URL}" "${TAG}"
 test_istioctl_version istio-${TAG}/bin/istioctl "${HUB}" "${TAG}"
 test_helm_files istio-${TAG} "${HUB}" "${TAG}"
