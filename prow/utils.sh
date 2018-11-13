@@ -18,7 +18,7 @@
 source "greenBuild.VERSION"
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
+export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 # Download and unpack istio release artifacts
 function download_untar_istio_release() {
