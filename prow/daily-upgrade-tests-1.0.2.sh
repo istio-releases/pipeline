@@ -21,13 +21,14 @@ set -u
 # Print commands
 set -x
 
-# Exports $HUB, $TAG, $SHA
-source greenBuild.VERSION
+source "prow/test_setup.sh"
 
+# Set up inputs needed by test_upgrade.sh
 export SOURCE_VERSION=1.0.2
 export SOURCE_RELEASE_PATH="https://github.com/istio/istio/releases/download/${SOURCE_VERSION}"
 export TARGET_VERSION=${TAG}
 export TARGET_RELEASE_PATH=${ISTIO_REL_URL}
 
-./prow/daily-upgrade-tests.sh
+# Run the corresponding test in istio source code.
+./prow/upgrade-tests.sh
 

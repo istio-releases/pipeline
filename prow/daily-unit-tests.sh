@@ -14,18 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-WD=$(dirname $0)
-WD=$(cd $WD; pwd)
-
 # No unset vars, print commands as they're executed, and exit on any non-zero
 # return code
 set -u
 set -x
 set -e
 
-source "prow/utils.sh"
-
-git_clone_istio
+source "prow/test_setup.sh"
 
 # Run the corresponding test in istio source code.
 ./prow/istio-unit-tests.sh

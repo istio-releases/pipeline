@@ -26,9 +26,7 @@ set -u
 # Print commands
 set -x
 
-source "prow/utils.sh"
-
-e2e_setup
+source "prow/test_setup.sh"
 
 # Run the corresponding test in istio source code.
 ./prow/e2e-dashboard.sh
