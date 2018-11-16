@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 # Export $TAG, $HUB etc which are needed by the following functions.
-source "greenBuild.VERSION"
+source "test/greenBuild.VERSION"
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"

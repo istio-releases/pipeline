@@ -16,7 +16,7 @@ for the tool that does so. Complete release process can be found
 We track this history of release candidates with GitHub repository. It is under
 istio-releases rather than istio, a different org since we would like to keep the
 source in istio and infrastructure elsewhere.  The most critical file is the
-`greenBuild.VERSION`. An example is shown below. 
+`test/greenBuild.VERSION`. An example is shown below. 
 
 ```
 export HUB="gcr.io/laane-istio-dev"
@@ -28,14 +28,14 @@ export TIME=1517304965594224249
 ### Pull Requests to Trigger Qualification
 
 Tests are set up as presubmit checks and triggered by creating a pull request to
-update the `greenBuild.VERSION`. Each e2e test will source this file first so it
+update the `test/greenBuild.VERSION`. Each e2e test will source this file first so it
 tests with the specific artifacts the pipeline specified. The TIME attribute allows
 repeated qualifications on the same artifacts. 
 
 One should not edit this file or create a pull request by hand. We built a
 command-line tool named `githubctl` that does the following
 
-* Edit greenBuild.VERSION for with values passed through command line flags
+* Edit test/greenBuild.VERSION for with values passed through command line flags
 * Create a pull request with such changes against master
 * Fetch the list of required checks, poll their results until all jobs have
 finished or timeout

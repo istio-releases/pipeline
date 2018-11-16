@@ -37,7 +37,7 @@ function cleanup() {
 }
 
 function get_istio_code() {
-  source greenBuild.VERSION
+  source "test/greenBuild.VERSION"
   # Exports $HUB, $TAG
   echo "Using artifacts from HUB=${HUB} TAG=${TAG}"
 
