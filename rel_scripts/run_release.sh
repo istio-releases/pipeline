@@ -25,16 +25,18 @@ cd /workspace
 
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
 
-  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_*sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_push_docker_daily.sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_daily_complete.sh" .
   gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/docker_tag_push_lib.sh" .
   ./rel_push_docker_daily.sh
   ./rel_daily_complete.sh
 
 elif [[ "$CB_PIPELINE_TYPE" ==  "monthly" ]]; then
 
- gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/github_*sh" .
- gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/gcb_lib.sh" .
- gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/json_parse_shared.sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/github_publish_release.sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/github_tag_release.sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/gcb_lib.sh" .
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/json_parse_shared.sh" .
 
   ./github_publish_release.sh
   ./github_tag_release.sh

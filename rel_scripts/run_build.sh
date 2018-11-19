@@ -20,9 +20,20 @@ mkdir /workspace
 cp "build/build_env.sh" "/workspace/gcb_env.sh"
 source "/workspace/build_env.sh"
 
-# checkout the build tools and copy them for later steps
-git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH --depth 1
-cp istio/release/gcb/*sh /workspace
+SCRIPTS_IN_DAILY_RELEASES="true"
+if [[ -z SCRIPTS_IN_DAILY_RELEASES ]]; then
+
+  echo using scripts from $CB_GITHUB_ORG/istio
+  # checkout the build tools and copy them for later steps
+  git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH --depth 1
+  cp istio/release/gcb/*sh /workspace
+
+else
+
+  echo using scripts from daily-releases repo
+  cp rel_scripts/gcb/*sh /workspace
+
+fi
 
 cd /workspace
 gsutil -qm cp -P /workspace/*sh "gs://$CB_GCS_RELEASE_TOOLS_PATH/*"
