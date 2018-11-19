@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-function error() {
+function usage() {
     echo "error $1 is wrong"
     exit 1
 }
@@ -23,10 +23,10 @@ function error() {
 #export CB_TEST_GITHUB_TOKEN_FILE_PATH=
 
 function check_minimum_config_needed() {
-# minimum config needed
-[[ -z "$CB_BRANCH" ]] && error "CB_BRANCH"
-[[ -z "$CB_PIPELINE_TYPE" ]] && error "CB_PIPELINE_TYPE"
-[[ -z "$CB_VERSION" ]] && error "CB_VERSION"
+  # minimum config needed
+  [[ -z "$CB_BRANCH" ]] && usage "CB_BRANCH"
+  [[ -z "$CB_PIPELINE_TYPE" ]] && usage "CB_PIPELINE_TYPE"
+  [[ -z "$CB_VERSION" ]] && usage "CB_VERSION"
 }
 
 

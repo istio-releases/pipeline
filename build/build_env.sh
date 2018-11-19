@@ -14,7 +14,6 @@ export CB_GITHUB_TOKEN_FILE_PATH=istio-secrets/github.txt.enc
 export CB_ISTIOCTL_DOCKER_HUB=docker.io/istio
 export CB_PIPELINE_TYPE=monthly
 export CB_PUSH_DOCKER_HUBS=docker.io/istio
-export CB_RELEASE_TOOLS_SHA=
 export CB_TEST_GITHUB_TOKEN_FILE_PATH=
 export CB_VERIFY_CONSISTENCY=true
 export CB_VERSION=test-version
