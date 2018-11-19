@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2018 Istio Authors
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,4 +29,4 @@ git config --global user.email "testrunner@istio.io"
 "$GOBIN/githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=relPipelineRelease \
-    --base_branch="$CB_BRANCH" \
+    --base_branch="$CB_BRANCH"
