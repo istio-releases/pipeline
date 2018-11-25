@@ -51,17 +51,6 @@ if [[ -z "$CB_GITHUB_TOKEN_FILE_PATH" ]]; then
     #export CB_GITHUB_TOKEN_FILE_PATH=/etc/github
     export CB_GITHUB_TOKEN_FILE_PATH=istio-secrets/github.txt.enc
 fi
-
-# derivative config
-if [[ -z "$CB_GCS_BUILD_PATH" ]]; then
-    export CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/$CB_PIPELINE_TYPE/$CB_VERSION"
-fi
-if [[ -z "$CB_GCS_FULL_STAGING_PATH" ]]; then
-    export CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/$CB_PIPELINE_TYPE/$CB_VERSION"
-fi
-if [[ -z "$CB_GCS_RELEASE_TOOLS_PATH" ]]; then
-    export CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/$CB_PIPELINE_TYPE/$CB_VERSION"
-fi
 }
 
 
@@ -78,6 +67,17 @@ function set_daily_config() {
   if [[ -z "$CB_VERIFY_CONSISTENCY" ]]; then
       export CB_VERIFY_CONSISTENCY=false
   fi
+
+# derivative config
+if [[ -z "$CB_GCS_BUILD_PATH" ]]; then
+    export CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/daily-build/$CB_VERSION"
+fi
+if [[ -z "$CB_GCS_FULL_STAGING_PATH" ]]; then
+    export CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/daily-build/$CB_VERSION"
+fi
+if [[ -z "$CB_GCS_RELEASE_TOOLS_PATH" ]]; then
+    export CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/daily-build/$CB_VERSION"
+fi
 }
 
 
@@ -97,6 +97,17 @@ function set_monthly_config() {
   if [[ -z "$CB_GCS_MONTHLY_RELEASE_PATH" ]]; then
       export CB_GCS_MONTHLY_RELEASE_PATH=istio-release/releases/$CB_VERSION
   fi
+
+# derivative config
+if [[ -z "$CB_GCS_BUILD_PATH" ]]; then
+    export CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/prerelease/$CB_VERSION"
+fi
+if [[ -z "$CB_GCS_FULL_STAGING_PATH" ]]; then
+    export CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/prerelease/$CB_VERSION"
+fi
+if [[ -z "$CB_GCS_RELEASE_TOOLS_PATH" ]]; then
+    export CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/prerelease/$CB_VERSION"
+fi
 }
 
 function export_var_to_build_env_file() {

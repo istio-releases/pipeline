@@ -41,34 +41,9 @@ function githubctl_setup() {
   export TEST_INFRA_DIR
 }
 
-#sets GITHUB_KEYFILE to github auth file
 function github_keys() {
-  local LOCAL_DIR
-  LOCAL_DIR="$(mktemp -d /tmp/github.XXXX)"
-  local KEYFILE_ENC
-  KEYFILE_ENC="$LOCAL_DIR/keyfile.enc"
-  local KEYFILE_TEMP
-  KEYFILE_TEMP="$LOCAL_DIR/keyfile.txt"
-  local KEYRING
-  KEYRING="Secrets"
-  local KEY
-  KEY="DockerHub"
-
-  GITHUB_KEYFILE="${KEYFILE_TEMP}"
+  GITHUB_KEYFILE="${GITHUB_TOKEN_FILE}"
   export GITHUB_KEYFILE
-
-
-   gsutil -q cp "gs://${CB_GITHUB_TOKEN_FILE_PATH}" "${KEYFILE_ENC}"
-   gcloud kms decrypt \
-       --ciphertext-file="$KEYFILE_ENC" \
-       --plaintext-file="$KEYFILE_TEMP" \
-       --location=global \
-       --keyring="${KEYRING}" \
-       --key="${KEY}"
-
-  if [[ -n "$CB_TEST_GITHUB_TOKEN_FILE_PATH" ]]; then
-   gsutil -q cp "gs://${CB_TEST_GITHUB_TOKEN_FILE_PATH}" "${KEYFILE_TEMP}"
-  fi
 }
 
 function checkout_code() {
