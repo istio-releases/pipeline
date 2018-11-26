@@ -1,5 +1,4 @@
 # This script holds parameters specific to an instance of a build 
-#fake pr
 export CB_BRANCH=master
 export CB_CHECK_GREEN_SHA_AGE=true
 export CB_COMMIT=
