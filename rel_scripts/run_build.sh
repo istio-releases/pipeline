@@ -21,7 +21,7 @@ cp "build/build_env.sh" "/workspace/gcb_env.sh"
 source "/workspace/gcb_env.sh"
 
 SCRIPTS_IN_DAILY_RELEASES="true"
-if [[ SCRIPTS_IN_DAILY_RELEASES == "true" ]]; then
+if [[ "$SCRIPTS_IN_DAILY_RELEASES" == "true" ]]; then
 
   echo using scripts from daily-releases repo
   cp rel_scripts/gcb/*sh /workspace
