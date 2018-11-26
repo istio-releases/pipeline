@@ -15,18 +15,12 @@
 #   limitations under the License.
 
 
-#set -x
+set -x
 
-echo $PWD
 
-changed_files=$(git show --pretty="" --name-only)
-echo $changed_files
+function run_matching_trigger() {
 
 case ${changed_files} in
-    *"rel_scripts/"*)
-      echo rel_scripts matched do nothing;;
-    *"prow/"*)
-      echo prow matched do nothing;;
     *"build/build_env.sh"*)
       ./rel_scripts/trigger_test.sh;;
     *"perf/build_env.sh"*)
@@ -35,6 +29,18 @@ case ${changed_files} in
       ./rel_scripts/trigger_release.sh;;
     *"trigger_bld/"*)
       ./rel_scripts/trigger_build.sh;;
+    *"rel_scripts/"*)
+      echo rel_scripts matched do nothing;;
+    *"prow/"*)
+      echo prow matched do nothing;;
     *)
       echo no match, do nothing;;
 esac
+
+}
+
+echo $PWD
+changed_files=$(git show --pretty="" --name-only)
+echo $changed_files
+
+run_matching_trigger
