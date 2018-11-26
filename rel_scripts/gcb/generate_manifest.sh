@@ -230,7 +230,7 @@ pushd "${CLONE_DIR}"
    fi
    gsutil -q cp "${BASE_MASTER_MANIFEST_URL}" "manifest.txt"
   fi
-  MANIFEST_FILE="$PWD/manifest.txt"
+  MANIFEST_FILE="/workspace/manifest.txt"
 
   git clone "https://github.com/${CB_GITHUB_ORG}/istio" -b "${CB_BRANCH}"
 
@@ -246,8 +246,4 @@ pushd "${CLONE_DIR}"
 
 popd # "${CLONE_DIR}"
 rm -rf "${CLONE_DIR}"
-
-  gsutil -mq cp -P istio/release/gcb/*sh      "gs://${CB_GCS_RELEASE_TOOLS_PATH}/gcb/"
-  gsutil -mq cp -P istio/release/gcb/*json    "gs://${CB_GCS_RELEASE_TOOLS_PATH}/gcb/"
-  gsutil -mq cp -P istio/release/pipeline/*sh "gs://${CB_GCS_RELEASE_TOOLS_PATH}/pipeline/"
 
