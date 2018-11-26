@@ -29,7 +29,7 @@ gsutil -m cp -r "gs://$CB_GCS_BUILD_PATH" "gs://$CB_GCS_FULL_STAGING_PATH"
 
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
 
-  if [[ "$CB_GITHUB_ORG" != "istio" ]]
+  if [[ "$CB_GITHUB_ORG" != "istio" ]]; then
     echo "not messing up daily builds with testing"
     exit 0
   fi
