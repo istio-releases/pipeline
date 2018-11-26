@@ -41,11 +41,14 @@ gsutil -qm cp -P /workspace/*sh "gs://$CB_GCS_RELEASE_TOOLS_PATH/*"
 mkdir /output
 
 # start actual build steps
-./generate_manifest.sh
-./istio_checkout_code.sh
+/workspace/generate_manifest.sh
+/workspace/istio_checkout_code.sh
 
-./cloud_builder.sh
-./store_artifacts.sh
-./rel_push_docker_build_version.sh
-./modify_values.sh
-./helm_charts.sh
+cd /workspace/go/src/istio.io/istio
+/workspace/cloud_builder.sh
+
+cd /workspace
+/workspace/store_artifacts.sh
+/workspace/rel_push_docker_build_version.sh
+/workspace/modify_values.sh
+/workspace/helm_charts.sh
