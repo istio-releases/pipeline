@@ -23,12 +23,18 @@ changed_files=$(git show --pretty="" --name-only)
 echo $changed_files
 
 case ${changed_files} in
-    *"rel_scripts/"*) echo rel_scripts matched do nothing;;
-    *"prow/"*) echo prow matched do nothing;;
+    *"rel_scripts/"*)
+      echo rel_scripts matched do nothing;;
+    *"prow/"*)
+      echo prow matched do nothing;;
     *"build/build_env.sh"*)
       ./rel_scripts/trigger_test.sh;;
+    *"perf/build_env.sh"*)
+      ./rel_scripts/trigger_perf_qual.sh;;
     *"test/build_env.sh"*)
       ./rel_scripts/trigger_release.sh;;
-    *)
+    *"trigger_build/"*)
       ./rel_scripts/trigger_build.sh;;
+    *)
+      echo no match, do nothing;;
 esac
