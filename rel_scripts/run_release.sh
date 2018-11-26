@@ -23,6 +23,9 @@ source "/workspace/gcb_env.sh"
 
 cd /workspace
 
+#copy files over to final destination
+gsutil -m cp -r "gs://$CB_GCS_BUILD_PATH" "gs://$CB_GCS_FULL_STAGING_PATH"
+
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
 
   gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_push_docker_daily.sh" .
