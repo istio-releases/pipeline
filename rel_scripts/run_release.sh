@@ -14,6 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+set -x
 
 # /workspace is the working directory for the scripts
 mkdir /workspace
@@ -28,6 +29,7 @@ gsutil -m cp -r "gs://$CB_GCS_BUILD_PATH" "gs://$CB_GCS_FULL_STAGING_PATH"
 
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
 
+  gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_push_docker.sh" .
   gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_push_docker_daily.sh" .
   gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/rel_daily_complete.sh" .
   gsutil -qm cp -P "gs://$CB_GCS_RELEASE_TOOLS_PATH/docker_tag_push_lib.sh" .
