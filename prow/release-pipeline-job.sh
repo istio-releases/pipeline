@@ -33,7 +33,7 @@ case ${changed_files} in
       ./rel_scripts/trigger_perf_qual.sh;;
     *"test/build_env.sh"*)
       ./rel_scripts/trigger_release.sh;;
-    *"trigger_build/"*)
+    *"trigger_bld/"*)
       ./rel_scripts/trigger_build.sh;;
     *)
       echo no match, do nothing;;
