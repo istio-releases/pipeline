@@ -15,6 +15,17 @@
 #   limitations under the License.
 
 function usage() {
+    echo "
+For running a manual build call this script from root dir of repo   with the
+following variables set CB_BRANCH, CB_PIPELINE_TYPE=daily/monthly, CB_VERSION
+e.g.
+export CB_BRANCH=master
+export CB_PIPELINE_TYPE=daily
+export CB_VERSION=master-20181201-00-00
+./rel_scripts/create_release_build_env.sh
+send a PR with the resulting diff in file build/build_env.sh to
+istio-releases/daily-release repo on the appropirate branch
+         "
     echo "error $1 is wrong"
     exit 1
 }
