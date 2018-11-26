@@ -42,7 +42,7 @@ else
 fi
 
 cd /workspace
-gsutil -qm cp -P /workspace/*sh "gs://$CB_GCS_RELEASE_TOOLS_PATH/*"
+gsutil -qm cp -P /workspace/*sh "gs://$CB_GCS_RELEASE_TOOLS_PATH/"
 # /output is used to store release artifacts
 mkdir /output
 
