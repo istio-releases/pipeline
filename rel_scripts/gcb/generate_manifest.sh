@@ -219,18 +219,18 @@ CLONE_DIR=$(mktemp -d)
 pushd "${CLONE_DIR}"
   githubctl_setup
 
+  MANIFEST_FILE="/workspace/manifest.txt"
   BASE_MANIFEST_URL="gs://${CB_GCS_BUILD_BUCKET}/release-tools/${CB_BRANCH}-manifest.txt"
   BASE_MASTER_MANIFEST_URL="gs://${CB_GCS_BUILD_BUCKET}/release-tools/master-manifest.txt"
 
   NEW_BRANCH="false"
-  gsutil -q cp "${BASE_MANIFEST_URL}" "manifest.txt"  || NEW_BRANCH="true"
+  gsutil -q cp "${BASE_MANIFEST_URL}" "$MANIFEST_FILE"  || NEW_BRANCH="true"
   if [[ "${NEW_BRANCH}" == "true" ]]; then
    if [[ "${CB_COMMIT}" == "" ]]; then
      CB_COMMIT="HEAD" # just use head of branch as green sha
    fi
-   gsutil -q cp "${BASE_MASTER_MANIFEST_URL}" "manifest.txt"
+   gsutil -q cp "${BASE_MASTER_MANIFEST_URL}" "$MANIFEST_FILE"
   fi
-  MANIFEST_FILE="/workspace/manifest.txt"
 
   git clone "https://github.com/${CB_GITHUB_ORG}/istio" -b "${CB_BRANCH}"
 
@@ -246,4 +246,3 @@ pushd "${CLONE_DIR}"
 
 popd # "${CLONE_DIR}"
 rm -rf "${CLONE_DIR}"
-
