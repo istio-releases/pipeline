@@ -14,6 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+set -x
 
 if [[ -z "$CB_BRANCH" ]]; then
   export CB_BRANCH=$GIT_BRANCH
@@ -43,3 +44,5 @@ git config --global user.email "testrunner@istio.io"
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=relPipelineBuild \
     --base_branch="$CB_BRANCH"
+
+echo build triggered
