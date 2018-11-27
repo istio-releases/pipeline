@@ -22,7 +22,7 @@ GOBIN=$GOPATH/bin
 
 time go get -u istio.io/test-infra/toolbox/githubctl
 
-wget -q "$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt"
+gsutil cp "gs://$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" "manifest.txt"
 ISTIO_SHA=$(grep "istio" "manifest.txt" | cut -f 2 -d " ")
 
 # this setting is required by githubctl, which runs git commands
