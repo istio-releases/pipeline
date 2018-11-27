@@ -33,7 +33,7 @@ git config --global user.email "testrunner@istio.io"
 
 "$GOBIN/githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
-    --op=relPipelineTest \
+    --op=relPipelineQual \
     --base_branch="$CB_BRANCH" \
     --hub="$CB_DOCKER_HUB" \
     --gcs_path="$CB_GCS_BUILD_PATH" \
