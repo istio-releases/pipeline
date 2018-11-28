@@ -16,6 +16,10 @@
 
 set -x
 
+
+git log -n 10
+git show --pretty="" --name-only
+
 # /workspace is the working directory for the scripts
 mkdir /workspace
 cp "release/build_env.sh" "/workspace/gcb_env.sh"
