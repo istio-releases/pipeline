@@ -16,8 +16,6 @@
 
 set -x
 
-source "build/build_env.sh" 
-
 GOPATH=$PWD/go
 mkdir -p go/bin
 GOBIN=$GOPATH/bin

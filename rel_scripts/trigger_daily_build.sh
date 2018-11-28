@@ -43,6 +43,7 @@ git config --global user.email "testrunner@istio.io"
 "$GOBIN/githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=relPipelineBuild \
+    --tag="$CB_VERSION" \
     --base_branch="$CB_BRANCH"
 
 echo build triggered

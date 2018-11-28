@@ -14,19 +14,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-GOPATH=$PWD/go
-mkdir -p go/bin
-GOBIN=$GOPATH/bin
+# Exit immediately for non zero status
+set -e
+# Check unset variables
+set -u
+# Print commands
+set -x
 
-time go get -u istio.io/test-infra/toolbox/githubctl
-
-# this setting is required by githubctl, which runs git commands
-git config --global user.name "TestRunnerBot"	
-git config --global user.email "testrunner@istio.io"
-
-"$GOBIN/githubctl" \
-    --token_file="$GITHUB_TOKEN_FILE" \
-    --op=relPipelineRelease \
-    --base_branch="$CB_BRANCH" \
-    --tag="$CB_VERSION" \
-    --pipeline="$CB_PIPELINE_TYPE"
+# /workspace is the working directory for the scripts
+mkdir /workspace 
+cp "daily/build/build_env.sh" "/workspace/gcb_env.sh"
+./rel_scripts/run_build.sh
