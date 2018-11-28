@@ -38,4 +38,5 @@ git config --global user.email "testrunner@istio.io"
     --hub="$CB_DOCKER_HUB" \
     --gcs_path="$CB_GCS_BUILD_PATH" \
     --tag="$CB_VERSION" \
-    --ref_sha="$ISTIO_SHA"
+    --ref_sha="$ISTIO_SHA" \
+    --pipeline="$CB_PIPELINE_TYPE"

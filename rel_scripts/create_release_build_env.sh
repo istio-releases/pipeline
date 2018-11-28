@@ -149,7 +149,7 @@ function export_var_to_build_env_file() {
     do
     echo "export $var=${!var}"
     done
-  } > "build/build_env.sh"
+  } > "$CB_PIPELINE_TYPE/build/build_env.sh"
 }
 
 
