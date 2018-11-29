@@ -14,8 +14,32 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+
+function set_pipeline_type() {
+
+case ${changed_files} in
+    *"daily/test/"*)
+      echo matched daily
+      PIPELINE_TYPE=daily;;
+    *"monthly/test/"*)
+      echo matched monthly
+      PIPELINE_TYPE=monthly;;
+    *)
+      echo no match, do nothing
+      exit 1;;
+esac
+
+}
+
+echo ====================
+changed_files=$(git show --pretty="" --name-only)
+echo $changed_files
+set_pipeline_type
+echo ====================
+
 # Export $TAG, $HUB etc which are needed by the following functions.
-source "test/greenBuild.VERSION"
+source "$PIPELINE_TYPE/test/greenBuild.VERSION"
+
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
