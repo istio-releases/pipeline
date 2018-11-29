@@ -17,6 +17,19 @@
 
 function set_pipeline_type() {
 
+# the top commit is the commit we need base our testing on
+# it is a merge commit in the following format
+#commit 524ee2b0ae1f4b68882472e862161e10a05ffecb
+#Merge: 174aef7 933ee0e
+#Author: ci-robot <ci-robot@k8s.io>
+#Date:   Thu Nov 29 02:02:24 2018 +0000
+#
+#    Merge commit '933ee0edfbc15629a5bb06d600c5fb52795be7c4' into krishna-test
+
+commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
+changed_files=$(git show --pretty="" --name-only $commit)
+
+# The files in path daily/test or monthly/test determines the pipeline type
 case ${changed_files} in
     *"daily/test/"*)
       echo matched daily
@@ -25,18 +38,14 @@ case ${changed_files} in
       echo matched monthly
       PIPELINE_TYPE=monthly;;
     *)
-      echo no match, do nothing
+      echo $changed_files
+      echo Error cant find pipeline type
       exit 1;;
 esac
 
 }
 
-echo ==================== 1
-commit=$(git log -n 1 | grep "Merge commit" | cut -f 2 -d \')
-changed_files=$(git show --pretty="" --name-only $commit)
-echo $changed_files
 set_pipeline_type
-echo ==================== 5
 
 # Export $TAG, $HUB etc which are needed by the following functions.
 source "$PIPELINE_TYPE/test/greenBuild.VERSION"
