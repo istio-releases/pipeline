@@ -34,9 +34,9 @@ esac
 echo ==================== 1
 git --version
 git log -n 10
-git log -n 1 | grep ^commit | cut -f 2 -d " "
+git log -n 1 | grep "Merge commit" | cut -f 2 -d \'
 echo ==================== 2
-git log -n 1 | grep ^commit | cut -f 2 -d " " | xargs git show
+git log -n 1 | grep "Merge commit" | cut -f 2 -d \' | xargs git show
 echo ==================== 3
 git show
 echo ==================== 4
