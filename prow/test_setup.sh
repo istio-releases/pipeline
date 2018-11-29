@@ -32,15 +32,8 @@ esac
 }
 
 echo ==================== 1
-git --version
-git log -n 10
-git log -n 1 | grep "Merge commit" | cut -f 2 -d \'
-echo ==================== 2
-git log -n 1 | grep "Merge commit" | cut -f 2 -d \' | xargs git show
-echo ==================== 3
-git show
-echo ==================== 4
-changed_files=$(git show --pretty="" --name-only)
+commit=$(git log -n 1 | grep "Merge commit" | cut -f 2 -d \')
+changed_files=$(git show --pretty="" --name-only $commit)
 echo $changed_files
 set_pipeline_type
 echo ==================== 5
