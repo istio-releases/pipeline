@@ -32,6 +32,8 @@ esac
 }
 
 echo ====================
+git log -n 10
+git show
 changed_files=$(git show --pretty="" --name-only)
 echo $changed_files
 set_pipeline_type
