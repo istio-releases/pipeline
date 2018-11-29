@@ -31,13 +31,19 @@ esac
 
 }
 
-echo ====================
+echo ==================== 1
+git --version
 git log -n 10
+git log -n 1 | grep ^commit | cut -f 2 -d " "
+echo ==================== 2
+git log -n 1 | grep ^commit | cut -f 2 -d " " | xargs git show
+echo ==================== 3
 git show
+echo ==================== 4
 changed_files=$(git show --pretty="" --name-only)
 echo $changed_files
 set_pipeline_type
-echo ====================
+echo ==================== 5
 
 # Export $TAG, $HUB etc which are needed by the following functions.
 source "$PIPELINE_TYPE/test/greenBuild.VERSION"
