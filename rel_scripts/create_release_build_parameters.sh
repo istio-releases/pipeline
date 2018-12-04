@@ -22,33 +22,12 @@ For running a manual build call this script from root dir of repo with
 -v version of the release
 
 send a PR with the resulting diff in file {daily|monthly}/build/build_parameters.sh to
-istio-releases/daily-release repo on the appropirate branch
+istio-releases/daily-release repo on the appropriate branch
          "
     exit 1
 }
 # CB_COMMIT is used only to override green build and build at specific sha
 # CB_TEST_GITHUB_TOKEN_FILE_PATH is used for testing purposes to specify private github tokens
-
-function check_minimum_config_needed() {
-  # minimum config needed
-  [[ -z "$CB_BRANCH" ]] && usage "CB_BRANCH"
-  [[ -z "$CB_PIPELINE_TYPE" ]] && usage "CB_PIPELINE_TYPE"
-  [[ -z "$CB_VERSION" ]] && usage "CB_VERSION"
-}
-
-
-function parse_script_params() {
-  while getopts b:p:v: arg ; do
-    case "${arg}" in
-      b) CB_BRANCH="${OPTARG}";;
-      p) CB_PIPELINE_TYPE="${OPTARG}";;
-      v) CB_VERSION="${OPTARG}";;
-      *) usage;;
-    esac
-  done
-  check_minimum_config_needed
-}
-
 
 function set_common_config() {
 # common config for daily and monthly pipelines
@@ -160,7 +139,21 @@ function export_var_to_build_parameters_file() {
 }
 
 
-parse_script_params
+#parse_script_params
+while getopts b:p:v: arg ; do
+  case "${arg}" in
+    b) CB_BRANCH="${OPTARG}";;
+    p) CB_PIPELINE_TYPE="${OPTARG}";;
+    v) CB_VERSION="${OPTARG}";;
+    *) usage;;
+  esac
+done
+
+# minimum config needed
+[[ -z "$CB_BRANCH" ]] && usage
+[[ -z "$CB_PIPELINE_TYPE" ]] && usage
+[[ -z "$CB_VERSION" ]] && usage
+
 set_common_config
 # config for specific type of pipeline (daily/monthly)
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
