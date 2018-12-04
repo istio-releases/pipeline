@@ -16,24 +16,18 @@
 
 function usage() {
     echo "
-For running a manual build call this script from root dir of repo   with the
-following variables set CB_BRANCH, CB_PIPELINE_TYPE=daily/monthly, CB_VERSION
-e.g.
-export CB_BRANCH=master
-export CB_PIPELINE_TYPE=daily
-export CB_VERSION=master-20181201-00-00
-./rel_scripts/create_release_build_env.sh
-send a PR with the resulting diff in file build/build_env.sh to
+For running a manual build call this script from root dir of repo with
+-b branch of istio to build
+-p pipeline type (daily/monthly)
+-v version of the release
+
+send a PR with the resulting diff in file {daily|monthly}/build/build_parameters.sh to
 istio-releases/daily-release repo on the appropirate branch
          "
-    echo "error $1 is wrong"
     exit 1
 }
-
 # CB_COMMIT is used only to override green build and build at specific sha
-#export CB_COMMIT=
-# CB_TEST_GITHUB_TOKEN_FILE_PATH is used only to for testing purposes
-#export CB_TEST_GITHUB_TOKEN_FILE_PATH=
+# CB_TEST_GITHUB_TOKEN_FILE_PATH is used for testing purposes to specify private github tokens
 
 function check_minimum_config_needed() {
   # minimum config needed
@@ -43,85 +37,98 @@ function check_minimum_config_needed() {
 }
 
 
+function parse_script_params() {
+  while getopts b:p:v: arg ; do
+    case "${arg}" in
+      b) CB_BRANCH="${OPTARG}";;
+      p) CB_PIPELINE_TYPE="${OPTARG}";;
+      v) CB_VERSION="${OPTARG}";;
+      *) usage;;
+    esac
+  done
+  check_minimum_config_needed
+}
+
+
 function set_common_config() {
 # common config for daily and monthly pipelines
 
 if [[ -z "$CB_CHECK_GREEN_SHA_AGE" ]]; then
-    export CB_CHECK_GREEN_SHA_AGE=true
+    CB_CHECK_GREEN_SHA_AGE=true
 fi
 if [[ -z "$CB_GCS_BUILD_BUCKET" ]]; then
-    export CB_GCS_BUILD_BUCKET=istio-release-pipeline-data
+    CB_GCS_BUILD_BUCKET=istio-release-pipeline-data
 fi
 if [[ -z "$CB_GCS_STAGING_BUCKET" ]]; then
-    export CB_GCS_STAGING_BUCKET=istio-prerelease
+    CB_GCS_STAGING_BUCKET=istio-prerelease
 fi
 if [[ -z "$CB_GITHUB_ORG" ]]; then
-    export CB_GITHUB_ORG=istio
+    CB_GITHUB_ORG=istio
 fi
 if [[ -z "$CB_GITHUB_TOKEN_FILE_PATH" ]]; then
-    #export CB_GITHUB_TOKEN_FILE_PATH=/etc/github
-    export CB_GITHUB_TOKEN_FILE_PATH=istio-secrets/github.txt.enc
+    #CB_GITHUB_TOKEN_FILE_PATH=/etc/github
+    CB_GITHUB_TOKEN_FILE_PATH=istio-secrets/github.txt.enc
 fi
 }
 
 
 function set_daily_config() {
   if [[ -z "$CB_DOCKER_HUB" ]]; then
-      export CB_DOCKER_HUB=gcr.io/istio-release
+      CB_DOCKER_HUB=gcr.io/istio-release
   fi
   if [[ -z "$CB_ISTIOCTL_DOCKER_HUB" ]]; then
-      export CB_ISTIOCTL_DOCKER_HUB=gcr.io/istio-release
+      CB_ISTIOCTL_DOCKER_HUB=gcr.io/istio-release
   fi
   if [[ -z "$CB_PUSH_DOCKER_HUBS" ]]; then
-      export CB_PUSH_DOCKER_HUBS=gcr.io/istio-release
+      CB_PUSH_DOCKER_HUBS=gcr.io/istio-release
   fi
   if [[ -z "$CB_VERIFY_CONSISTENCY" ]]; then
-      export CB_VERIFY_CONSISTENCY=false
+      CB_VERIFY_CONSISTENCY=false
   fi
 
 # derivative config
 if [[ -z "$CB_GCS_BUILD_PATH" ]]; then
-    export CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/daily-build/$CB_VERSION"
+    CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/daily-build/$CB_VERSION"
 fi
 if [[ -z "$CB_GCS_FULL_STAGING_PATH" ]]; then
-    export CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/daily-build/$CB_VERSION"
+    CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/daily-build/$CB_VERSION"
 fi
 if [[ -z "$CB_GCS_RELEASE_TOOLS_PATH" ]]; then
-    export CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/daily-build/$CB_VERSION"
+    CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/daily-build/$CB_VERSION"
 fi
 }
 
 
 function set_monthly_config() {
   if [[ -z "$CB_DOCKER_HUB" ]]; then
-      export CB_DOCKER_HUB=docker.io/istio
+      CB_DOCKER_HUB=docker.io/istio
   fi
   if [[ -z "$CB_ISTIOCTL_DOCKER_HUB" ]]; then
-      export CB_ISTIOCTL_DOCKER_HUB=docker.io/istio
+      CB_ISTIOCTL_DOCKER_HUB=docker.io/istio
   fi
   if [[ -z "$CB_PUSH_DOCKER_HUBS" ]]; then
-      export CB_PUSH_DOCKER_HUBS=docker.io/istio
+      CB_PUSH_DOCKER_HUBS=docker.io/istio
   fi
   if [[ -z "$CB_VERIFY_CONSISTENCY" ]]; then
-      export CB_VERIFY_CONSISTENCY=true
+      CB_VERIFY_CONSISTENCY=true
   fi
   if [[ -z "$CB_GCS_MONTHLY_RELEASE_PATH" ]]; then
-      export CB_GCS_MONTHLY_RELEASE_PATH=istio-release/releases/$CB_VERSION
+      CB_GCS_MONTHLY_RELEASE_PATH=istio-release/releases/$CB_VERSION
   fi
 
 # derivative config
 if [[ -z "$CB_GCS_BUILD_PATH" ]]; then
-    export CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/prerelease/$CB_VERSION"
+    CB_GCS_BUILD_PATH="$CB_GCS_BUILD_BUCKET/prerelease/$CB_VERSION"
 fi
 if [[ -z "$CB_GCS_FULL_STAGING_PATH" ]]; then
-    export CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/prerelease/$CB_VERSION"
+    CB_GCS_FULL_STAGING_PATH="$CB_GCS_STAGING_BUCKET/prerelease/$CB_VERSION"
 fi
 if [[ -z "$CB_GCS_RELEASE_TOOLS_PATH" ]]; then
-    export CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/prerelease/$CB_VERSION"
+    CB_GCS_RELEASE_TOOLS_PATH="$CB_GCS_BUILD_BUCKET/release-tools/prerelease/$CB_VERSION"
 fi
 }
 
-function export_var_to_build_env_file() {
+function export_var_to_build_parameters_file() {
   local exportvar=(
   CB_BRANCH
   CB_CHECK_GREEN_SHA_AGE
@@ -149,11 +156,11 @@ function export_var_to_build_env_file() {
     do
     echo "export $var=${!var}"
     done
-  } > "$CB_PIPELINE_TYPE/build/build_env.sh"
+  } > "$CB_PIPELINE_TYPE/build/build_parameters.sh"
 }
 
 
-check_minimum_config_needed
+parse_script_params
 set_common_config
 # config for specific type of pipeline (daily/monthly)
 if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
@@ -164,4 +171,4 @@ else
   error CB_PIPELINE_TYPE
 fi
 
-export_var_to_build_env_file
+export_var_to_build_parameters_file

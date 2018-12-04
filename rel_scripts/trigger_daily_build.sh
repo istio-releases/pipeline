@@ -17,17 +17,17 @@
 set -x
 
 if [[ -z "$CB_BRANCH" ]]; then
-  export CB_BRANCH=$GIT_BRANCH
+  CB_BRANCH=$GIT_BRANCH
   if [[ -z "$CB_BRANCH" ]]; then
     echo "CB_BRANCH not set please set it"
     exit 1
   fi
 fi
 if [[ -z "$CB_VERSION" ]]; then
-  export CB_VERSION=$CB_BRANCH-$(date '+%Y%m%d-%H-%M')
+  CB_VERSION=$CB_BRANCH-$(date '+%Y%m%d-%H-%M')
 fi
 if [[ -z "$CB_PIPELINE_TYPE" ]]; then
-  export CB_PIPELINE_TYPE=daily
+  CB_PIPELINE_TYPE=daily
 fi
 
 GOPATH=$PWD/go
@@ -44,6 +44,7 @@ git config --global user.email "testrunner@istio.io"
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=relPipelineBuild \
     --tag="$CB_VERSION" \
-    --base_branch="$CB_BRANCH"
+    --base_branch="$CB_BRANCH" \
+    --pipeline="$CB_PIPELINE_TYPE"
 
 echo build triggered

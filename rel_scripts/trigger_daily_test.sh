@@ -14,5 +14,5 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-source "daily/build/build_env.sh" 
+source "daily/build/build_parameters.sh" 
 ./rel_scripts/trigger_test.sh

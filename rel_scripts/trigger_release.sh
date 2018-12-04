@@ -21,7 +21,7 @@ GOBIN=$GOPATH/bin
 time go get -u istio.io/test-infra/toolbox/githubctl
 
 # this setting is required by githubctl, which runs git commands
-git config --global user.name "TestRunnerBot"	
+git config --global user.name "TestRunnerBot"
 git config --global user.email "testrunner@istio.io"
 
 "$GOBIN/githubctl" \

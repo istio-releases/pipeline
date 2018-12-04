@@ -23,5 +23,5 @@ set -x
 
 # /workspace is the working directory for the scripts
 mkdir /workspace 
-cp "daily/build/build_env.sh" "/workspace/gcb_env.sh"
+cp "daily/build/build_parameters.sh" "/workspace/gcb_env.sh"
 ./rel_scripts/run_build.sh

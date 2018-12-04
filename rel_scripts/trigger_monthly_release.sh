@@ -14,5 +14,5 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-source "monthly/test/build_env.sh"
+source "monthly/test/build_parameters.sh"
 ./rel_scripts/trigger_release.sh

@@ -22,19 +22,13 @@ GOBIN=$GOPATH/bin
 
 time go get -u istio.io/test-infra/toolbox/githubctl
 
-gsutil cp "gs://$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" "manifest.txt"
-ISTIO_SHA=$(grep "istio" "manifest.txt" | cut -f 2 -d " ")
-
 # this setting is required by githubctl, which runs git commands
-git config --global user.name "TestRunnerBot"	
+git config --global user.name "TestRunnerBot"
 git config --global user.email "testrunner@istio.io"
 
 "$GOBIN/githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=relPipelineQual \
     --base_branch="$CB_BRANCH" \
-    --hub="$CB_DOCKER_HUB" \
-    --gcs_path="$CB_GCS_BUILD_PATH" \
     --tag="$CB_VERSION" \
-    --ref_sha="$ISTIO_SHA" \
     --pipeline="$CB_PIPELINE_TYPE"

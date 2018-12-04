@@ -53,5 +53,5 @@ cd /workspace/go/src/istio.io/istio
 cd /workspace
 /workspace/store_artifacts.sh
 /workspace/rel_push_docker_build_version.sh
-/workspace/modify_values.sh
 /workspace/helm_charts.sh
+/workspace/helm_values.sh

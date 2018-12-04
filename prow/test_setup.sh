@@ -16,45 +16,53 @@
 
 
 function set_pipeline_type() {
+  # the top commit is the commit we need base our testing on
+  # it is a merge commit in the following format
+  # the short sha string 933ee0e is the sha of the actual commit
+  #commit 524ee2b0ae1f4b68882472e862161e10a05ffecb
+  #Merge: 174aef7 933ee0e
+  #Author: ci-robot <ci-robot@k8s.io>
+  #Date:   Thu Nov 29 02:02:24 2018 +0000
+  #
+  #    Merge commit '933ee0edfbc15629a5bb06d600c5fb52795be7c4' into krishna-test
 
-# the top commit is the commit we need base our testing on
-# it is a merge commit in the following format
-#commit 524ee2b0ae1f4b68882472e862161e10a05ffecb
-#Merge: 174aef7 933ee0e
-#Author: ci-robot <ci-robot@k8s.io>
-#Date:   Thu Nov 29 02:02:24 2018 +0000
-#
-#    Merge commit '933ee0edfbc15629a5bb06d600c5fb52795be7c4' into krishna-test
+  commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
+  changed_files=$(git show --pretty="" --name-only $commit)
 
-commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
-changed_files=$(git show --pretty="" --name-only $commit)
+  # The files in path daily/test or monthly/test determines the pipeline type
+  if [[ "${changed_files}" == *"daily/test/"* ]]; then
+    echo matched daily
+    PIPELINE_TYPE=daily
+  fi
 
-# The files in path daily/test or monthly/test determines the pipeline type
-case ${changed_files} in
-    *"daily/test/"*)
-      echo matched daily
-      PIPELINE_TYPE=daily;;
-    *"monthly/test/"*)
-      echo matched monthly
-      PIPELINE_TYPE=monthly;;
-    *)
-      echo $changed_files
-      echo Error cant find pipeline type
-      exit 1;;
-esac
+  if [[ "${changed_files}" == *"monthly/test/"* ]]; then
+    echo matched monthly
+    if [[ -n "${PIPELINE_TYPE}" ]]; then
+      echo error already matched ${PIPELINE_TYPE}
+      exit 1
+    fi
+   PIPELINE_TYPE=monthly
+  fi
 
+  if [[ -z "${PIPELINE_TYPE}" ]]; then
+    echo $changed_files
+    echo Error cant find pipeline type
+    exit 2
+  fi
 }
 
 set_pipeline_type
+source "$PIPELINE_TYPE/test/build_parameters.sh"
 
-# Export $TAG, $HUB etc which are needed by the following functions.
-source "$PIPELINE_TYPE/test/greenBuild.VERSION"
-
+export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
+export HUB="$CB_DOCKER_HUB"
+export TAG="$CB_VERSION"
+export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
 
 # Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
 export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
-# Get istio source code at the $SHA given by greenBuild.VERSION.
+# Get istio source code at the $SHA for this build
 function git_clone_istio() {
   # Checkout istio at the greenbuild
   mkdir -p ${GOPATH}/src/istio.io
@@ -76,4 +84,3 @@ download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
 
 # Use downloaded yaml artifacts rather than the ones generated locally
 cp -R istio-${TAG}/install/* install/
-

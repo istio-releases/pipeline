@@ -18,7 +18,7 @@ set -x
 
 # /workspace is the working directory for the scripts
 mkdir /workspace
-cp "daily/release/build_env.sh" "/workspace/gcb_env.sh"
+cp "daily/release/build_parameters.sh" "/workspace/gcb_env.sh"
 source "/workspace/gcb_env.sh"
 
 #copy files over to final destination
