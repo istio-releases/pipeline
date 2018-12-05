@@ -29,6 +29,7 @@ function set_pipeline_type() {
   commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
   changed_files=$(git show --pretty="" --name-only $commit)
 
+  PIPELINE_TYPE=""
   # The files in path daily/test or monthly/test determines the pipeline type
   if [[ "${changed_files}" == *"daily/test/"* ]]; then
     echo matched daily
