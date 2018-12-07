@@ -14,5 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-source "daily/build/build_parameters.sh" 
+# sources the parameters file and sets build parameters env variables
+source rel_scripts/pipeline_parameters_lib.sh
+
 ./rel_scripts/trigger_test.sh
