@@ -21,7 +21,6 @@ set -u
 # Print commands
 set -x
 
-# /workspace is the working directory for the scripts
-mkdir /workspace 
-cp "monthly/build/build_parameters.sh" "/workspace/gcb_env.sh"
+# sources the parameters file and sets build parameters env variables
+source rel_scripts/pipeline_parameters_lib.sh
 ./rel_scripts/run_build.sh
