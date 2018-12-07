@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 
-function set_pipeline_type() {
+function set_branch_pipeline_type() {
   # the top commit is the commit we need base our testing on
   # it is a merge commit in the following format
   # the short sha string 933ee0e is the sha of the actual commit
@@ -27,33 +27,41 @@ function set_pipeline_type() {
   #    Merge commit '933ee0edfbc15629a5bb06d600c5fb52795be7c4' into krishna-test
 
   commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
-  changed_files=$(git show --pretty="" --name-only $commit)
+  num_files_changed=$(git show --pretty="" --name-only $commit | wc -l)
+  changed_file=$(git show --pretty="" --name-only $commit)
+  BRANCH=$(git show --pretty="" --name-only $commit | sed 's#/.*##')
+
+  if [[ "$num_files_changed" != "1" ]]; then
+    echo more files changed than expected: $changed_file $BRANCH
+    exit 1
+  fi
+
 
   PIPELINE_TYPE=""
   # The files in path daily/test or monthly/test determines the pipeline type
-  if [[ "${changed_files}" == *"daily/test/"* ]]; then
+  if [[ "${changed_file}" == *"daily/test/"* ]]; then
     echo matched daily
     PIPELINE_TYPE=daily
   fi
 
-  if [[ "${changed_files}" == *"monthly/test/"* ]]; then
+  if [[ "${changed_file}" == *"monthly/test/"* ]]; then
     echo matched monthly
     if [[ -n "${PIPELINE_TYPE}" ]]; then
       echo error already matched ${PIPELINE_TYPE}
-      exit 1
+      exit 2
     fi
    PIPELINE_TYPE=monthly
   fi
 
   if [[ -z "${PIPELINE_TYPE}" ]]; then
-    echo $changed_files
+    echo $changed_file
     echo Error cant find pipeline type
-    exit 2
+    exit 3
   fi
 }
 
-set_pipeline_type
-source "$PIPELINE_TYPE/test/build_parameters.sh"
+set_branch_pipeline_type
+source "$BRANCH/$PIPELINE_TYPE/test/build_parameters.sh"
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export HUB="$CB_DOCKER_HUB"
