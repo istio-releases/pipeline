@@ -16,9 +16,6 @@
 
 set -x
 
-# sources the parameters file and sets build parameters env variables
-source rel_scripts/pipeline_parameters_lib.sh
-
 #copy files over to final destination
 gsutil -m cp -r "gs://$CB_GCS_BUILD_PATH" "gs://$CB_GCS_FULL_STAGING_PATH"
 
