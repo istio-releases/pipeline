@@ -24,6 +24,5 @@ set -x
 # sources the parameters file and sets build parameters env variables
 source rel_scripts/pipeline_parameters_lib.sh
 
-local script_to_run
 script_to_run="$1"
-rel_scripts/$script_to_run
+exec rel_scripts/$script_to_run
