@@ -1,7 +1,7 @@
 # This script holds parameters specific to an instance of a build
 export CB_BRANCH=master
 export CB_CHECK_GREEN_SHA_AGE=true
-export CB_COMMIT=a196b03c8b07b9ef8a0a38da625ac4784cec4d71
+export CB_COMMIT=e390f0af9d68c5dfbc55fdedcf09c4752a3f087d
 export CB_DOCKER_HUB=gcr.io/istio-release
 export CB_GCS_BUILD_BUCKET=istio-release-pipeline-data
 export CB_GCS_BUILD_PATH=istio-release-pipeline-data/daily-build/hklai-master-20181212-19-15
