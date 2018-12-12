@@ -29,6 +29,13 @@ fi
 if [[ -z "$CB_PIPELINE_TYPE" ]]; then
   CB_PIPELINE_TYPE=daily
 fi
+if [[ -z "$CB_COMMIT" ]]; then
+  git clone "https://github.com/istio/istio" -b "${CB_BRANCH}" --depth 1
+  pushd istio
+    CB_COMMIT=$(git rev-parse HEAD)
+  popd
+fi
+
 
 GOPATH=$PWD/go
 mkdir -p go/bin
@@ -45,6 +52,7 @@ git config --global user.email "testrunner@istio.io"
     --op=relPipelineBuild \
     --tag="$CB_VERSION" \
     --base_branch="$CB_BRANCH" \
+    --ref_sha="$CB_COMMIT" \
     --pipeline="$CB_PIPELINE_TYPE"
 
 echo build triggered

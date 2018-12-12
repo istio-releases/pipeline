@@ -18,6 +18,7 @@ function usage() {
     echo "
 For running a manual build call this script from root dir of repo with
 -b branch of istio to build
+-c sha of the commit on istio/istio
 -p pipeline type (daily/monthly)
 -v version of the release
 
@@ -140,9 +141,10 @@ function export_var_to_build_parameters_file() {
 
 
 #parse_script_params
-while getopts b:p:v: arg ; do
+while getopts b:c:p:v: arg ; do
   case "${arg}" in
     b) CB_BRANCH="${OPTARG}";;
+    c) CB_COMMIT="${OPTARG}";;
     p) CB_PIPELINE_TYPE="${OPTARG}";;
     v) CB_VERSION="${OPTARG}";;
     *) usage;;
@@ -151,6 +153,7 @@ done
 
 # minimum config needed
 [[ -z "$CB_BRANCH" ]] && usage
+[[ -z "$CB_COMMIT" ]] && usage
 [[ -z "$CB_PIPELINE_TYPE" ]] && usage
 [[ -z "$CB_VERSION" ]] && usage
 
