@@ -19,6 +19,8 @@ set -e
 # Print commands
 set -x
 
+SAVE_DIR="$PWD"
+
 script_to_run="$1"
 mkdir -p /workspace/go/src/istio.io/
 cd /workspace/go/src/istio.io/
@@ -37,5 +39,13 @@ fi
 
 # Check unset variables
 set -u
+
+
+if [[ "$script_to_run" == *"trigger_"* ]]; then
+  cd $SAVE_DIR
+  exec rel_scripts/$script_to_run
+  exit $?
+fi
+
 cp release/gcb/*sh /workspace
 exec release/gcb/$script_to_run
