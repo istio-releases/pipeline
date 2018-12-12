@@ -17,3 +17,4 @@ export CB_PUSH_DOCKER_HUBS=gcr.io/istio-release
 export CB_TEST_GITHUB_TOKEN_FILE_PATH=
 export CB_VERIFY_CONSISTENCY=false
 export CB_VERSION=release-1.1-20181212-19-41
+# fake 1
