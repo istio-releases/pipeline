@@ -24,16 +24,12 @@ set -x
 # sources the parameters file and sets build parameters env variables
 source rel_scripts/pipeline_parameters_lib.sh
 
-function use_istio_scripts() {
-  mkdir -p /workspace/go/src/istio.io/
-  cd /workspace/go/src/istio.io/
-  git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
-  cd istio
-  git checkout $CB_COMMIT
-
-  cp rel_scripts/gcb/*sh /workspace
-  exec release/gcb/$script_to_run
-}
-
 script_to_run="$1"
-exec rel_scripts/$script_to_run
+mkdir -p /workspace/go/src/istio.io/
+cd /workspace/go/src/istio.io/
+git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
+cd istio
+git checkout $CB_COMMIT
+
+cp rel_scripts/gcb/*sh /workspace
+exec release/gcb/$script_to_run
