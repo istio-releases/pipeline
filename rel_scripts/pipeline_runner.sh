@@ -24,23 +24,22 @@ SAVE_DIR="$PWD"
 script_to_run="$1"
 mkdir -p /workspace/go/src/istio.io/
 
-if [[ -z "${SKIP_SOURCE_PIPELINE_PARAM}" ]]; then
+if [[ "${SKIP_SOURCE_PIPELINE_PARAM}" == "true" ]]; then
+  cd /workspace/go/src/istio.io/
+  CB_BRANCH=$GIT_BRANCH
+  git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
+  cd istio
+else
   # sources the parameters file and sets build parameters env variables
   source rel_scripts/pipeline_parameters_lib.sh
   cd /workspace/go/src/istio.io/
-  CB_BRANCH=$GIT_BRANCH
   git clone "https://github.com/istio/istio" -b $CB_BRANCH
-  cd istio
-else
-  cd /workspace/go/src/istio.io/
-  git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
   cd istio
   git checkout $CB_COMMIT
 fi
 
 # Check unset variables
 set -u
-
 
 if [[ "$script_to_run" == *"trigger_"* ]]; then
   cd $SAVE_DIR
