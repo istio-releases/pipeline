@@ -31,5 +31,5 @@ git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
 cd istio
 git checkout $CB_COMMIT
 
-cp rel_scripts/gcb/*sh /workspace
+cp release/gcb/*sh /workspace
 exec release/gcb/$script_to_run
