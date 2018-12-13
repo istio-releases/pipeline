@@ -5,7 +5,7 @@ set -e
 # Print commands
 set -x
 
-source ./test_setup.sh
+source ./prow/test_setup.sh
 
 exec "$1"
 
