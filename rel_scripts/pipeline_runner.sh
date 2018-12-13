@@ -19,7 +19,6 @@ set -e
 # Print commands
 set -x
 
-script_to_run="$1"
 mkdir -p /workspace/go/src/istio.io/
 
 if [[ "${SKIP_SOURCE_PIPELINE_PARAM}" == "true" ]]; then
@@ -42,4 +41,4 @@ git checkout $CHECKOUT_SHA
 set -u
 
 cp release/gcb/*sh /workspace
-exec release/gcb/$script_to_run
+exec "$1"
