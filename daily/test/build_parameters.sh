@@ -1,13 +1,13 @@
 # This script holds parameters specific to an instance of a build
 export CB_BRANCH=release-1.0
 export CB_CHECK_GREEN_SHA_AGE=true
-export CB_COMMIT=5580ddf57b3cb216b90257b3f0c5fb03d653a45e
+export CB_COMMIT=6eece306f065ea71fad07d9520d13fff35559d80
 export CB_DOCKER_HUB=gcr.io/istio-release
 export CB_GCS_BUILD_BUCKET=istio-release-pipeline-data
-export CB_GCS_BUILD_PATH=istio-release-pipeline-data/daily-build/release-1.0-20181212-21-41
-export CB_GCS_FULL_STAGING_PATH=istio-prerelease/daily-build/release-1.0-20181212-21-41
+export CB_GCS_BUILD_PATH=istio-release-pipeline-data/daily-build/release-1.0-20181213-09-16
+export CB_GCS_FULL_STAGING_PATH=istio-prerelease/daily-build/release-1.0-20181213-09-16
 export CB_GCS_MONTHLY_RELEASE_PATH=
-export CB_GCS_RELEASE_TOOLS_PATH=istio-release-pipeline-data/release-tools/daily-build/release-1.0-20181212-21-41
+export CB_GCS_RELEASE_TOOLS_PATH=istio-release-pipeline-data/release-tools/daily-build/release-1.0-20181213-09-16
 export CB_GCS_STAGING_BUCKET=istio-prerelease
 export CB_GITHUB_ORG=istio
 export CB_GITHUB_TOKEN_FILE_PATH=istio-secrets/github.txt.enc
@@ -16,4 +16,4 @@ export CB_PIPELINE_TYPE=daily
 export CB_PUSH_DOCKER_HUBS=gcr.io/istio-release
 export CB_TEST_GITHUB_TOKEN_FILE_PATH=
 export CB_VERIFY_CONSISTENCY=false
-export CB_VERSION=release-1.0-20181212-21-41
+export CB_VERSION=release-1.0-20181213-09-16
