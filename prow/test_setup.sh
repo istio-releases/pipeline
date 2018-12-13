@@ -32,7 +32,7 @@ function git_clone_istio() {
   mkdir -p ${GOPATH}/src/istio.io
   pushd    ${GOPATH}/src/istio.io
 
-  git clone -n https://github.com/istio/istio.git
+  git clone -n https://github.com/$CB_GITHUB_ORG/istio.git
   pushd istio
 
   #from now on we are in ${GOPATH}/src/istio.io/istio dir
