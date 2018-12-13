@@ -18,6 +18,15 @@
 # sources the parameters file and sets build parameters env variables
 source rel_scripts/pipeline_parameters_lib.sh
 
+# Sleep 20 mins to let the build complete. This is a workaround to the lack of
+# proper workflow support in prow, and this must be removed one workflow is
+# implemented in prow.
+# The run_after_success support had been removed, and it does not work properly
+# along with run_if_changed that we use.
+# The next better hack is to sleep until the build is available, and we may
+# pursue that in later.
+sleep 1200
+
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export HUB="$CB_DOCKER_HUB"
 export TAG="$CB_VERSION"
