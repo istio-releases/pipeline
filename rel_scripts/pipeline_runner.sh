@@ -30,7 +30,7 @@ else
   # sources the parameters file and sets build parameters env variables
   source rel_scripts/pipeline_parameters_lib.sh
   CHECKOUT_SHA=$CB_COMMIT
-  ISTIO_ORG=$CB_ORG
+  ISTIO_ORG=$CB_GITHUB_ORG
 fi
 
 cd /workspace/go/src/istio.io/
