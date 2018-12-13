@@ -32,14 +32,13 @@ function set_pipeline_file() {
   num_files_changed=$(git show --pretty="" --name-only $commit | wc -l)
   local changed_file
   changed_file=$(git show --pretty="" --name-only $commit)
-  BRANCH=$(git show --pretty="" --name-only $commit | sed 's#/.*##')
 
   if [[ "$num_files_changed" != "1" ]]; then
-    echo more files changed than expected: $changed_file $BRANCH
+    echo more files changed than expected: $changed_file
     exit 1
   fi
 
-  if [[ "${changed_file}" == *"/build_parameters.sh" ]]; then
+  if [[ "${changed_file}" == *"/release_params.sh" ]]; then
     PIPELINE_PARAM_FILE="${changed_file}"
   else
     echo error parameters file did not change: $changed_file
