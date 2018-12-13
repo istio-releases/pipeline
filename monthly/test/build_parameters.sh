@@ -1,7 +1,7 @@
 # This script holds parameters specific to an instance of a build
 export CB_BRANCH=release-1.1
 export CB_CHECK_GREEN_SHA_AGE=true
-export CB_COMMIT=f927d1ec433cecc6f66fcdcc0af38327b70efa68
+export CB_COMMIT=8bd6433fbe5141d7c41ddd55c137b0ac7e21a025
 export CB_DOCKER_HUB=docker.io/istio
 export CB_GCS_BUILD_BUCKET=istio-release-pipeline-data
 export CB_GCS_BUILD_PATH=istio-release-pipeline-data/prerelease/1.1.0-snapshot.4
