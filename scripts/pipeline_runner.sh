@@ -14,20 +14,31 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-
-#######################################
-# Presubmit script triggered by Prow. #
-#######################################
-
 # Exit immediately for non zero status
 set -e
-# Check unset variables
-set -u
 # Print commands
 set -x
 
-source "prow/test_setup.sh"
+mkdir -p /workspace/go/src/istio.io/
 
-# Run the corresponding test in istio source code.
-./prow/e2e-dashboard.sh
+if [[ "${SKIP_SOURCE_PIPELINE_PARAM}" == "true" ]]; then
+  CB_BRANCH=$GIT_BRANCH
+  CHECKOUT_SHA=""
+  ISTIO_ORG=istio
+else
+  # sources the parameters file and sets build parameters env variables
+  source scripts/pipeline_parameters_lib.sh
+  CHECKOUT_SHA=$CB_COMMIT
+  ISTIO_ORG=$CB_GITHUB_ORG
+fi
 
+cd /workspace/go/src/istio.io/
+git clone "https://github.com/$ISTIO_ORG/istio" -b $CB_BRANCH
+cd istio
+git checkout $CHECKOUT_SHA
+
+# Check unset variables
+set -u
+
+cp release/gcb/*sh /workspace
+exec "$1"

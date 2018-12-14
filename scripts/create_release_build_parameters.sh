@@ -136,7 +136,7 @@ function export_var_to_build_parameters_file() {
     do
     echo "export $var=${!var}"
     done
-  } > "$CB_PIPELINE_TYPE/build/build_parameters.sh"
+  } > "$CB_PIPELINE_TYPE/release_params.sh"
 }
 
 
