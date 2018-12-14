@@ -32,14 +32,21 @@ function set_pipeline_file() {
   num_files_changed=$(git show --pretty="" --name-only $commit | wc -l)
   local changed_file
   changed_file=$(git show --pretty="" --name-only $commit)
-  BRANCH=$(git show --pretty="" --name-only $commit | sed 's#/.*##')
 
+  # This job fails if not exactly one param file is updated in the PR.
+  # For now it helps to gate unintended build/test/release because of prow
+  # config caveat, when run_if_changed and run_after_success do not mix.
+  # Therefore, updating any other release scripts will require manual merge
+  # from  repo admins (i.e. release owners).
+  #
+  # Eventually, this should be fixed when prow implements proper workflow
+  # support.
   if [[ "$num_files_changed" != "1" ]]; then
-    echo more files changed than expected: $changed_file $BRANCH
+    echo more files changed than expected: $changed_file
     exit 1
   fi
 
-  if [[ "${changed_file}" == *"/build_parameters.sh" ]]; then
+  if [[ "${changed_file}" == *"/release_params.sh" ]]; then
     PIPELINE_PARAM_FILE="${changed_file}"
   else
     echo error parameters file did not change: $changed_file
