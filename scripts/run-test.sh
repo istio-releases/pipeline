@@ -16,7 +16,7 @@
 
 
 # sources the parameters file and sets build parameters env variables
-source rel_scripts/pipeline_parameters_lib.sh
+source scripts/pipeline_parameters_lib.sh
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export HUB="$CB_DOCKER_HUB"
@@ -48,3 +48,7 @@ download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
 
 # Use downloaded yaml artifacts rather than the ones generated locally
 cp -R istio-${TAG}/install/* install/
+
+# Run the test script in istio/istio.
+exec "$1"
+
