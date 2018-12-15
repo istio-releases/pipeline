@@ -21,10 +21,10 @@ if [[ -z "$GIT_BRANCH" ]]; then
   exit 1
 fi
 
-VERSION=$CB_BRANCH-$(date '+%Y%m%d-%H-%M')
+VERSION=$GIT_BRANCH-$(date '+%Y%m%d-%H-%M')
 PIPELINE_TYPE=daily
 
-git clone "https://github.com/istio/istio" -b "${CB_BRANCH}" --depth 1
+git clone "https://github.com/istio/istio" -b "${GIT_BRANCH}" --depth 1
 pushd istio || exit 1
   COMMIT=$(git rev-parse HEAD)
 popd || exit 2
