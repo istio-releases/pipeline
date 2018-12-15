@@ -56,6 +56,6 @@ function set_pipeline_file() {
 
 set_pipeline_file
 mkdir /workspace || true
-cp "${PIPELINE_PARAM_FILE}" /workspace/gcb_env.sh
+cat "${PIPELINE_PARAM_FILE}" scripts/augmented_params.sh > /workspace/gcb_env.sh
 source /workspace/gcb_env.sh
 
