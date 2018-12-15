@@ -21,24 +21,17 @@ set -x
 
 mkdir -p /workspace/go/src/istio.io/
 
-if [[ "${SKIP_SOURCE_PIPELINE_PARAM}" == "true" ]]; then
-  CB_BRANCH=$GIT_BRANCH
-  CHECKOUT_SHA=""
-  ISTIO_ORG=istio
-else
-  # sources the parameters file and sets build parameters env variables
-  source scripts/pipeline_parameters_lib.sh
-  CHECKOUT_SHA=$CB_COMMIT
-  ISTIO_ORG=$CB_GITHUB_ORG
-fi
+# sources the parameters file and sets build parameters env variables
+source scripts/pipeline_parameters_lib.sh
 
 cd /workspace/go/src/istio.io/
-git clone "https://github.com/$ISTIO_ORG/istio" -b $CB_BRANCH
+git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
 cd istio
-git checkout $CHECKOUT_SHA
+git checkout $CB_COMMIT
 
 # Check unset variables
 set -u
 
+# TODO avoid copying build scripts to /workspace
 cp release/gcb/*sh /workspace
 exec "$1"
