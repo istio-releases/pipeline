@@ -31,5 +31,3 @@ fi
     --op=cleanupReleaseRequests \
     --owner="istio-releases" \
     --repo="pipeline"
-
-echo Build Triggered
