@@ -16,20 +16,6 @@
 
 set -x
 
-if [[ -z "$GIT_BRANCH" ]]; then
-  echo "GIT_BRANCH not set"
-  exit 1
-fi
-
-VERSION=$GIT_BRANCH-$(date '+%Y%m%d-%H-%M')
-PIPELINE_TYPE=daily
-
-git clone "https://github.com/istio/istio" -b "${GIT_BRANCH}" --depth 1
-pushd istio || exit 1
-  COMMIT=$(git rev-parse HEAD)
-popd || exit 2
-
-
 GOPATH=${GOPATH:-$PWD/go}
 mkdir -p {$GOPATH}/bin
 
@@ -42,11 +28,7 @@ fi
 
 "$GOPATH/bin/githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
-    --op=newReleaseRequest \
-    --tag="$VERSION" \
-    --base_branch="$GIT_BRANCH" \
-    --ref_sha="$COMMIT" \
-    --pipeline="$PIPELINE_TYPE" \
+    --op=cleanupReleaseRequests \
     --owner="istio-releases" \
     --repo="pipeline"
 
