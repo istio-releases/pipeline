@@ -22,16 +22,20 @@ if [[ -z "$GIT_BRANCH" ]]; then
 fi
 
 VERSION=$GIT_BRANCH-$(date '+%Y%m%d-%H-%M')
-PIPELINE_TYPE=daily
+PIPELINE_TYPE=${PIPELINE_TYPE:-daily}
 
+
+ISTIO_DIR="$(mktemp -d /tmp/XXXXX.istio)"
+pushd ${ISTIO_DIR} || exit 1
 git clone "https://github.com/istio/istio" -b "${GIT_BRANCH}" --depth 1
-pushd istio || exit 1
-  COMMIT=$(git rev-parse HEAD)
+cd istio || exit 1
+COMMIT=$(git rev-parse HEAD)
 popd || exit 2
+rm -rf ${ISTIO_DIR}
 
 
 GOPATH=${GOPATH:-$PWD/go}
-mkdir -p {$GOPATH}/bin
+mkdir -p ${GOPATH}/bin
 
 time go get  istio.io/test-infra/toolbox/githubctl
 
