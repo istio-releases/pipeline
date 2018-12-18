@@ -40,7 +40,7 @@ mkdir -p ${GOPATH}/bin
 time go get  istio.io/test-infra/toolbox/githubctl
 
 if [[ ! -z "${RELEASE_BOT}" ]]; then
-  git config --global user.name "TestRunnerBot"
+  git config --global user.name "Istio Release Bot"
   git config --global user.email "testrunner@istio.io"
 fi
 
