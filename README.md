@@ -96,3 +96,14 @@ requests in istio-releases/pipeline, merges the requests that have all tests pas
 requests that have expired, and triggers retest in case a test fails. The job can be found at
 http://prow.istio.io/?type=periodic&job=release-requests-janitor
 
+
+# Prow Config
+
+Build, test, and release config can be found at 
+https://github.com/istio/test-infra/tree/master/prow/cluster/jobs/istio-releases/pipeline.
+Each branch has its own configuration. If you want to add a new release test, this is
+where you should look.
+
+The scheduled jobs config can be found at
+https://github.com/istio/test-infra/blob/master/prow/cluster/jobs/all-periodics.yaml
+
