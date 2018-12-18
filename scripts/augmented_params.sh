@@ -25,7 +25,7 @@ if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
 
 elif [[ "$CB_PIPELINE_TYPE" ==  "monthly" ]]; then
   export CB_DOCKER_HUB=${CB_DOCKER_HUB:-docker.io/istio}
-  export CB_ISTIOCTL_DOCKER_HUB=${B_ISTIOCTL_DOCKER_HUB:-docker.io/istio}
+  export CB_ISTIOCTL_DOCKER_HUB=${CB_ISTIOCTL_DOCKER_HUB:-docker.io/istio}
   export CB_PUSH_DOCKER_HUBS=${CB_PUSH_DOCKER_HUBS:-docker.io/istio}
   export CB_VERIFY_CONSISTENCY=${CB_VERIFY_CONSISTENCY:-true}
 
