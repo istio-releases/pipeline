@@ -15,7 +15,7 @@ environment variable ```token_file``` to point to your token file.
 export token_file={path_to_your_token_file}
 ```
 
-Abnd then, clone this repository in your git environment.
+And then, clone this repository in your git environment.
 ```shell
 git clone https://github.com/istio-releases/pipeline.git
 cd pipeline
