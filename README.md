@@ -7,13 +7,19 @@ publish the release artifacts to the final release destination.
 
 # Kick off a Manual Daily Release
 
-The one time setup is to clone this repository in your git environment.
+## One Time Setup
+First, create a github token at https://github.com/settings/tokens if you do not
+already have one. Then, create a new local file to store your token, and set an
+environment variable ```token_file``` to point to your token file.
+
+Abnd then, clone this repository in your git environment.
 ```shell
 git clone https://github.com/istio-releases/pipeline.git
 cd pipeline
 ```
 
-And then you can kick off a new daily release using the following command. 
+## Sending a Release Request
+You can kick off a new daily release using the following command. 
 ```shell
 GIT_BRANCH={branch} ./scripts/trigger_daily_release.sh
 ```
