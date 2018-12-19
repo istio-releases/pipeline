@@ -11,6 +11,9 @@ publish the release artifacts to the final release destination.
 First, create a github token at https://github.com/settings/tokens if you do not
 already have one. Then, create a new local file to store your token, and set an
 environment variable ```token_file``` to point to your token file.
+```shell
+export token_file={path_to_your_token_file}
+```
 
 Abnd then, clone this repository in your git environment.
 ```shell
