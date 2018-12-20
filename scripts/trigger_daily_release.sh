@@ -63,6 +63,7 @@ else
   echo "export CB_PIPELINE_TYPE=$PIPELINE_TYPE" >> $paramFile
   echo "export CB_VERSION=$VERSION" >> $paramFile
   echo "export CB_COMMIT=$COMMIT" >> $paramFile
-  echo $paramFile has been updated with release parameters. Please send a PR to trigger release automation.
+  echo
+  echo Please send a PR containing $paramFile to trigger release automation.
 fi
 
