@@ -5,49 +5,33 @@ and sending out a git pull request triggers release automation to build release
 artifacts, run release qualification tests, and if all required tests have passed,
 publish the release artifacts to the final release destination.
 
-# Kick off a Manual Daily Release
+# Starting a New Release
 
 ## One Time Setup
-First, create a github token at https://github.com/settings/tokens if you do not
-already have one. Then, create a new local file to store your token, and set an
-environment variable ```token_file``` to point to your token file.
-```shell
-export token_file={path_to_your_token_file}
-```
+Fork and clone this repository in your github environnment. You will start a new
+release by sending out a pull request.
 
-And then, clone this repository in your git environment.
-```shell
-git clone https://github.com/istio-releases/pipeline.git
-cd pipeline
-```
-
-## Sending a Release Request
-You can kick off a new daily release using the following command. 
+## Trigger a New Daily Release
+You can kick off a new daily release by running the following command. 
 ```shell
 GIT_BRANCH={branch} ./scripts/trigger_daily_release.sh
 ```
 
 You must provide the release branch where you want to build the release from.
 The script automatically determines the latest branch SHA and the release
-version using the branch name and timestamp, and generates a new pull request
-in the requested branch to trigger release automation. The PR URL can be found
-at the end of script output.
+version using the branch name and timestamp, checks out the right branch, and
+updates [daily/release_params.sh]
+(https://github.com/istio-releases/pipeline/blob/master/daily/release_params.sh).
 
-Example:
-```shell
-2018/12/18 12:00:48 Creating a PR with Title: "DAILY master-20181218-12-00" for repo pipeline
-2018/12/18 12:00:49 Created new PR at https://github.com/istio-releases/pipeline/pull/109
-```
+All you need to do is to send a new pull request containing the updated parameter
+file to trigger a kick off a new daily release. As a convention, please use
+"DAILY <release version>" as the PR title.
 
-The generated pull request will be merged automatically when all required tests have
-passed. In case some required tests have failed, they will be retried automatically up to
-3 times. And the PR will be closed if it cannot be merged for a day.
-
-# Understanding Release Pull Request
+## Understanding Release Pull Request
 
 A release pull request first triggers a prow job named "prow/release-build", which builds
-request artifacts and made them available for testing. This step also builds all docker
-images, and have them pushed to a public registry.
+request artifacts and make them available for testing. This step also builds docker images,
+and have them pushed to a public registry.
 
 Once "prow/release-build" completes, the test jobs are started. This is the release qualification
 step which consumes the release artifacts and make sure they are up to a certain standard, including:
@@ -61,38 +45,68 @@ can find the build log in the "prow/release-build" log.
 
 <img src="https://github.com/hklai/istio/blob/istio_wiki/wiki/release_pr.png?raw=true" alt="example" width="600"/>
 
-Once all tests have passed, the pull request will be merged automatically. A post-submit job
-will do all the heavy lifting of publishing release artifacts to the right place. You can find the
-post-submit job at http://prow.istio.io/?repo=istio-releases%2Fpipeline&type=postsubmit.
+Test failures will be retried up to three times. Once all tests have passed, the pull request will
+be merged *automatically*. A post-submit job will do all the heavy lifting of publishing release
+artifacts to the right place. You can find the post-submit job at 
+http://prow.istio.io/?repo=istio-releases%2Fpipeline&type=postsubmit.
 
-# Kick off a Monthly Release
 
-Similar to daily releases, a monthly (or LTS /patch) release can be kicked off by running the
-trigger command.
+## Kick off a Monthly Release
+
+Similar to daily releases, a monthly (or LTS/patch) release can be kicked off by sending out
+a new pull request. As the monthly release parameters can typically determined manually, you
+can first check out the right release branch (e.g. release-1.1), and modify the parameters
+directly in [monthly/release_params.sh]
+(https://github.com/istio-releases/pipeline/blob/master/monthly/release_params.sh).
 
 ```shell
-GIT_BRANCH={branch} PIPELINE_TYPE=monthly VERSION={version} COMMIT={sha} ./scripts/trigger_daily_release.sh
+export CB_BRANCH=master
+export CB_COMMIT=f927d1ec433cecc6f66fcdcc0af38327b70efa68
+export CB_PIPELINE_TYPE=monthly
+export CB_VERSION=1.2.0-snapshot.0
 ```
 
-Unlike daily releases, you must specify ```PIPELINE_TYPE=monthly``` with the expected version string
-(e.g. 1.0.5), the release branch name (e.g. release-1.0), and the SHA from the branch where the release
-should be cut from.
+* ```CB_BRANCH``` is the release branch in (istio/istio)[https://www.github.com/istio/istio]
+where you want to build from. You **must** modify ```release_params.sh``` in the corresponding
+branch. (i.e. if you are building a monthly from istio (release-1.1)
+[https://github.com/istio/istio/tree/release-1.1], you must update  ```release_params.sh``` in
+the (release-1.1)[https://github.com/istio-releases/pipeline/tree/release-1.1] of this repo.
 
-Alterhatively, one can directly update monthly/release_parameters.sh and send a pull request to the
-branch where the release is cut from. That way, you can even configure some advanced release parameters
-if you know what you are doing. Example: https://github.com/istio-releases/pipeline/pull/102/files
+* ```CB_COMMIT``` is the commit SHA in the (istio/istio)[https://www.github.com/istio/istio]
+release branch where you want to build the release from.
 
-# Release Artifact Locations
-## Daily Releases
+* ```CB_PIPELINE_TYPE``` is the release type. It should be ```monthly``` for monthly releases
+and you can leave the existing value alone.
+
+* ```CB_VERSION``` is the new release version. E.g. 1.0.6 or 1.1.0-snapshot.5.
+
+You can even configure some advanced release parameters if you know what you are doing. 
+Example: https://github.com/istio-releases/pipeline/pull/102/files
+
+And then you can send a PR with this file change to trigger release automation.  As a convention,
+please use "MONTHLY <release version>" as the PR title.
+
+
+# Monitoring
+
+You can find all the request pull requests in https://github.com/istio-releases/pipeline/pulls.
+And you can find the build and test log in the presubmit jobs of these pull requests.
+
+All presubmit and postsubmit jobs that run in this repository can be found at 
+https://prow.istio.io/?repo=istio-releases%2Fpipeline
+
+
+# Maintenance
+
+## Daily Release Location
 * Tarballs: https://gcsweb.istio.io/gcs/istio-prerelease/daily-build/
 * Images: gcr.io/istio-release
 
-## Monthly/LTS/Patch Releases
+## Monthly/LTS/Patch Release Location
 * Tarballs: https://github.com/istio/istio/releases
 * Images: docker.io/istio
 
-
-# Scheduled Jobs
+## Scheduled Jobs
 
 Daily releases are simply scheduled jobs that invokes ```./scripts/trigger_daily_release.sh``` daily. 
 These jobs can be found at:
@@ -105,8 +119,7 @@ requests in istio-releases/pipeline, merges the requests that have all tests pas
 requests that have expired, and triggers retest in case a test fails. The job can be found at
 http://prow.istio.io/?type=periodic&job=release-requests-janitor
 
-
-# Prow Config
+## Prow Config
 
 Build, test, and release config can be found at 
 https://github.com/istio/test-infra/tree/master/prow/cluster/jobs/istio-releases/pipeline.
