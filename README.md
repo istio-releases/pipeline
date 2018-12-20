@@ -98,6 +98,15 @@ https://prow.istio.io/?repo=istio-releases%2Fpipeline
 
 # Maintenance
 
+## Maintainer Setup
+
+As a maintainer, make sure you have write permission on this repositroy. Then, set an environment
+variable ```GITHUB_TOKEN_FILE``` point to a local file that contains your github token (create one
+at https://github.com/settings/tokens if you do not have any).
+
+With this, running ```scripts/trigger_daily_release.sh``` will create a temporary branch and a
+pull request for you automatically. 
+ 
 ## Daily Release Location
 * Tarballs: https://gcsweb.istio.io/gcs/istio-prerelease/daily-build/
 * Images: gcr.io/istio-release
