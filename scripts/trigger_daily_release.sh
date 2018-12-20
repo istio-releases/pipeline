@@ -44,14 +44,25 @@ if [[ ! -z "${RELEASE_BOT}" ]]; then
   git config --global user.email "testrunner@istio.io"
 fi
 
-"$GOPATH/bin/githubctl" \
-    --token_file="$GITHUB_TOKEN_FILE" \
-    --op=newReleaseRequest \
-    --tag="$VERSION" \
-    --base_branch="$GIT_BRANCH" \
-    --ref_sha="$COMMIT" \
-    --pipeline="$PIPELINE_TYPE" \
-    --owner="istio-releases" \
-    --repo="pipeline"
+if [[ ! -z "${GITHUB_TOKEN_FILE}" ]]; then
+  "$GOPATH/bin/githubctl" \
+      --token_file="$GITHUB_TOKEN_FILE" \
+      --op=newReleaseRequest \
+      --tag="$VERSION" \
+      --base_branch="$GIT_BRANCH" \
+      --ref_sha="$COMMIT" \
+      --pipeline="$PIPELINE_TYPE" \
+      --owner="istio-releases" \
+      --repo="pipeline"
+else
+  git checkouot $GIT_BRANCH
 
-echo Build Triggered
+  paramFile=${PIPELINE_TYPE}/release_params.sh
+
+  echo "export CB_BRANCH=$GIT_BRANCH" > $paramFile
+  echo "export CB_PIPELINE_TYPE=$PIPELINE_TYPE" >> $paramFile
+  echo "export CB_VERSION=$VERSION" >> $paramFile
+  echo "export CB_COMMIT=$COMMIT" >> $paramFile
+  echo $paramFile has been updated with release parameters. Please send a PR to trigger release automation.
+fi
+
