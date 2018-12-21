@@ -20,12 +20,11 @@ GIT_BRANCH={branch} ./scripts/trigger_daily_release.sh
 You must provide the release branch where you want to build the release from.
 The script automatically determines the latest branch SHA and the release
 version using the branch name and timestamp, checks out the right branch, and
-updates [daily/release_params.sh]
-(https://github.com/istio-releases/pipeline/blob/master/daily/release_params.sh).
+updates [daily/release_params.sh](https://github.com/istio-releases/pipeline/blob/master/daily/release_params.sh).
 
 All you need to do is to send a new pull request containing the updated parameter
 file to trigger a kick off a new daily release. As a convention, please use
-"DAILY <release version>" as the PR title.
+`DAILY <release version>` as the PR title.
 
 ## Understanding Release Pull Request
 
@@ -54,10 +53,9 @@ http://prow.istio.io/?repo=istio-releases%2Fpipeline&type=postsubmit.
 ## Kick off a Monthly Release
 
 Similar to daily releases, a monthly (or LTS/patch) release can be kicked off by sending out
-a new pull request. As the monthly release parameters can typically determined manually, you
+a new pull request. As the monthly release parameters are typically determined manually, you
 can first check out the right release branch (e.g. release-1.1), and modify the parameters
-directly in [monthly/release_params.sh]
-(https://github.com/istio-releases/pipeline/blob/master/monthly/release_params.sh).
+directly in [monthly/release_params.sh](https://github.com/istio-releases/pipeline/blob/master/monthly/release_params.sh).
 
 ```shell
 export CB_BRANCH=master
@@ -66,13 +64,11 @@ export CB_PIPELINE_TYPE=monthly
 export CB_VERSION=1.2.0-snapshot.0
 ```
 
-* ```CB_BRANCH``` is the release branch in (istio/istio)[https://www.github.com/istio/istio]
+* ```CB_BRANCH``` is the release branch in [istio/istio](https://www.github.com/istio/istio)
 where you want to build from. You **must** modify ```release_params.sh``` in the corresponding
-branch. (i.e. if you are building a monthly from istio (release-1.1)
-[https://github.com/istio/istio/tree/release-1.1], you must update  ```release_params.sh``` in
-the (release-1.1)[https://github.com/istio-releases/pipeline/tree/release-1.1] of this repo.
+branch. (i.e. if you are building a monthly from istio [release-1.1](https://github.com/istio/istio/tree/release-1.1), you must update  ```release_params.sh``` in the [release-1.1](https://github.com/istio-releases/pipeline/tree/release-1.1) of this repo.
 
-* ```CB_COMMIT``` is the commit SHA in the (istio/istio)[https://www.github.com/istio/istio]
+* ```CB_COMMIT``` is the commit SHA in the [istio/istio](https://www.github.com/istio/istio)
 release branch where you want to build the release from.
 
 * ```CB_PIPELINE_TYPE``` is the release type. It should be ```monthly``` for monthly releases
@@ -84,12 +80,12 @@ You can even configure some advanced release parameters if you know what you are
 Example: https://github.com/istio-releases/pipeline/pull/102/files
 
 And then you can send a PR with this file change to trigger release automation.  As a convention,
-please use "MONTHLY <release version>" as the PR title.
+please use `MONTHLY <release version>` as the PR title.
 
 
 # Monitoring
 
-You can find all the request pull requests in https://github.com/istio-releases/pipeline/pulls.
+You can find all the pull requests in https://github.com/istio-releases/pipeline/pulls.
 And you can find the build and test log in the presubmit jobs of these pull requests.
 
 All presubmit and postsubmit jobs that run in this repository can be found at 
@@ -137,4 +133,3 @@ where you should look.
 
 The scheduled jobs config can be found at
 https://github.com/istio/test-infra/blob/master/prow/cluster/jobs/all-periodics.yaml
-
