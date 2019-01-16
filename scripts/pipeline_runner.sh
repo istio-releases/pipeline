@@ -24,6 +24,12 @@ mkdir -p /workspace/go/src/istio.io/
 # sources the parameters file and sets build parameters env variables
 source scripts/pipeline_parameters_lib.sh
 
+if [ "$PARAM_FILE_CHANGED" = false ] ; then
+  echo no param file is changed. bypasssing build and release steps
+  exit 0
+fi
+
+
 cd /workspace/go/src/istio.io/
 git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
 cd istio
