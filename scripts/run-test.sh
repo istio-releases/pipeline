@@ -14,6 +14,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+# Exit immediately for non zero status
+set -e
+
+# Print commands
+set -x
 
 # sources the parameters file and sets build parameters env variables
 source scripts/pipeline_parameters_lib.sh
@@ -22,9 +27,6 @@ export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_
 export HUB="$CB_DOCKER_HUB"
 export TAG="$CB_VERSION"
 export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
-
-# Artifact dir is hardcoded in Prow - boostrap to be in first repo checked out
-export ARTIFACTS_DIR="${GOPATH}/src/github.com/istio-releases/daily-release/_artifacts"
 
 # Get istio source code at the $SHA for this build
 function git_clone_istio() {

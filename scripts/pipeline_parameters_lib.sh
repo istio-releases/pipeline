@@ -28,29 +28,28 @@ function set_pipeline_file() {
 
   local commit
   commit=$(git log -n 1 | grep "^Merge" | cut -f 3 -d " ")
-  local num_files_changed
-  num_files_changed=$(git show --pretty="" --name-only $commit | wc -l)
-  local changed_file
-  changed_file=$(git show --pretty="" --name-only $commit)
+  local changed_files
+  changed_files=($(git show --pretty="" --name-only $commit))
 
-  # This job fails if not exactly one param file is updated in the PR.
-  # For now it helps to gate unintended build/test/release because of prow
-  # config caveat, when run_if_changed and run_after_success do not mix.
-  # Therefore, updating any other release scripts will require manual merge
-  # from  repo admins (i.e. release owners).
-  #
-  # Eventually, this should be fixed when prow implements proper workflow
-  # support.
-  if [[ "$num_files_changed" != "1" ]]; then
-    echo more files changed than expected: $changed_file
-    exit 1
-  fi
+  export NUM_FILE_CHANGED=${#changed_files[@]}
+  export PIPELINE_PARAM_FILE=
+  export PARAM_FILE_CHANGED=false
 
-  if [[ "${changed_file}" == *"/release_params.sh" ]]; then
-    PIPELINE_PARAM_FILE="${changed_file}"
-  else
-    echo error parameters file did not change: $changed_file
-    exit 33
+  for changed_file in "${changed_files[@]}"
+  do
+    if [[ "${changed_file}" == *"/release_params.sh" ]]; then
+      if [[ -z "$PIPELINE_PARAM_FILE" ]]; then
+        export PARAM_FILE_CHANGED=true
+        export PIPELINE_PARAM_FILE="${changed_file}"
+      else
+        echo more than one param files are changed: $changed_files
+        exit 1
+      fi
+    fi
+  done
+
+  if [ "$PARAM_FILE_CHANGED" = false  ] ; then
+    PIPELINE_PARAM_FILE="daily/release_params.sh"
   fi
 }
 
