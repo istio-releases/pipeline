@@ -38,7 +38,7 @@ function set_pipeline_file() {
   for changed_file in "${changed_files[@]}"
   do
     if [[ "${changed_file}" == *"/release_params.sh" ]]; then
-      if [[ -z "$PIPELINE_PARAM_FILE=" ]]; then
+      if [[ -z "$PIPELINE_PARAM_FILE" ]]; then
         export PARAM_FILE_CHANGED=true
         export PIPELINE_PARAM_FILE="${changed_file}"
       else
