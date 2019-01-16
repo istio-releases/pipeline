@@ -55,7 +55,7 @@ if [[ ! -z "${GITHUB_TOKEN_FILE}" ]]; then
       --owner="istio-releases" \
       --repo="pipeline"
 else
-  git checkouot $GIT_BRANCH
+  git checkout $GIT_BRANCH
 
   paramFile=${PIPELINE_TYPE}/release_params.sh
 
