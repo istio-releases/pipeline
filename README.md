@@ -139,7 +139,7 @@ requests in istio-releases/pipeline, merges the requests that have all tests pas
 requests that have expired, and triggers retest in case a test fails. The job can be found at
 http://prow.istio.io/?type=periodic&job=release-requests-janitor
 
-## Adding a new release branch
+## Adding a New Release Branch
 1. Add the new release branch (e.g. release-1.2) in istio/istio, istio/api, istio/proxy, and istio/cni.
 1. Add the same release branch in this repo (i.e. https://github.com/istio-releases/pipeline) from master,
 and update the param files (e.g. https://github.com/istio-releases/pipeline/blob/master/daily/release_params.sh)
@@ -148,7 +148,7 @@ with the new branch name.
 https://github.com/istio/test-infra/blob/master/prow/cluster/jobs/istio-releases/pipeline/istio-releases.pipeline.master.yaml 
 to istio-releases.pipeline.release-x.y.yaml, and update the branch name in it.
 
-## Addomg a mew release test job
+## Addomg a New Release Test Job
 Find the prow config for the branch you want to add a new job in 
 https://github.com/istio/test-infra/tree/master/prow/cluster/jobs/istio-releases/pipeline, and add/update the job
 config there.
