@@ -5,4 +5,3 @@ export CB_PIPELINE_TYPE=monthly
 export CB_VERSION=1.1.0-snapshot.5
 export CB_VERIFY_CONSISTENCY=false
 
-
