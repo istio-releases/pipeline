@@ -160,3 +160,6 @@ config there.
 ## Monthly/LTS/Patch Release Artifacts Location
 * Tarballs: https://github.com/istio/istio/releases
 * Images: docker.io/istio
+
+## WARNinG Rerunning the Same Release
+See https://github.com/istio-releases/pipeline/issues/257
