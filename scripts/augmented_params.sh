@@ -6,9 +6,6 @@ export CB_GCS_STAGING_BUCKET=${CB_GCS_STAGING_BUCKET:-istio-prerelease}
 export CB_GITHUB_ORG=${CB_GITHUB_ORG:-istio}
 export CB_GITHUB_TOKEN_FILE_PATH=${CB_GITHUB_TOKEN_FILE_PATH=:-istio-secrets/github.txt.enc}
 
-export CB_GCS_BUILD_PATH=${CB_GCS_BUILD_PATH:-$CB_GCS_BUILD_BUCKET/daily-build/$CB_VERSION}
-export CB_GCS_FULL_STAGING_PATH=${CB_GCS_FULL_STAGING_PATH:-$CB_GCS_STAGING_BUCKET/daily-build/$CB_VERSION}
-export CB_GCS_RELEASE_TOOLS_PATH=${CB_GCS_RELEASE_TOOLS_PATH:-$CB_GCS_BUILD_BUCKET/release-tools/daily-build/$CB_VERSION}
 export CB_TEST_GITHUB_TOKEN_FILE_PATH=${CB_TEST_GITHUB_TOKEN_FILE_PATH:-}
 
 # config for specific type of pipeline (daily/monthly)
