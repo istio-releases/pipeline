@@ -93,6 +93,10 @@ And you can find the build and test log in the presubmit jobs of these pull requ
 All presubmit and postsubmit jobs that run in this repository can be found at 
 https://prow.istio.io/?repo=istio-releases%2Fpipeline
 
+Occassionally Prow misses webhook notifications and will not kick off the required presubmit/postsubmit
+jobs to complete daily releases. These are transient problems and things should just restore the
+next day. Or you can manually kick off a build by following the above steps.
+
 
 # Maintenance Notes
 
