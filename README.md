@@ -84,6 +84,9 @@ Example: https://github.com/istio-releases/pipeline/pull/102/files
 And then you can send a PR with this file change to trigger release automation.  As a convention,
 please use `MONTHLY <release version>` as the PR title.
 
+After the PR is merged, a draft release will be created at https://github.com/istio/istio/releases. 
+You will need to click the "Edit" button, update fields like title and release notes
+location, and then click "Public Release" to make it publicly visible.
 
 # Monitoring
 
