@@ -85,7 +85,7 @@ To make repos consistent
 Make sure that you are checking for sha in the same branch (ie release-1.1 for
 all repos)
 
- 1. In istio/proxy, update ISTIO_API and ISTIO_API_SHA256 in 
+ 1. In istio/proxy, update ISTIO_API and ISTIO_API_SHA256 in
 [repositories.bzl](https://github.com/istio/proxy/blob/master/repositories.bzl)
 
  To get sha256 run
