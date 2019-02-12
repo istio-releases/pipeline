@@ -90,22 +90,23 @@ To make repos consistent
 Make sure that you are checking for sha in the same branch (ie release-1.1 for
 all repos)
 
-1. In istio/proxy repo in repositories.bzl
-ISTIO_API = abcd // sha from istio/API repo
-ISTIO_API_SHA256 = zxcv
+1. In istio/proxy, update ISTIO_API and ISTIO_API_SHA256 in 
+[repositories.bzl](https://github.com/istio/proxy/blob/master/repositories.bzl)
 
 To get sha256 run
-wget
-https://github.com/istio/api/archive/COMMIT.tar.gz && sha256sum COMMIT.tar.gz
+```shell
+wget https://github.com/istio/api/archive/COMMIT.tar.gz && sha256sum COMMIT.tar.gz
+```
 
-2. In istio/proxy repo in istio.deps for ISTIO_API
-lastStableSHA = abcd
+2. In istio/proxy, update ISTIO_API sha in [istio.deps](https://github.com/istio/proxy/blob/master/istio.deps).
 
 3. In istio/istio run [dep](https://github.com/istio/istio/wiki/Vendor-FAQ)
+```shell
 go get -u github.com/golang/dep/cmd/dep
 dep ensure -update istio.io/api
+```
 
-It should update digest in Gopkg.lock for name = "istio.io/api"
+It should update both istio.io/api sha and digest in [https://github.com/istio/istio/blob/master/Gopkg.lock](Gopkg.lock)
 
 # Monitoring
 
