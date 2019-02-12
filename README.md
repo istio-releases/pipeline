@@ -81,7 +81,6 @@ https://istio.io/about/release-cadence/#naming-scheme. E.g. 1.0.6 or 1.1.0-snaps
 
 * ```CB_VERIFY_CONSISTENCY``` makes sure that the same API sha is pulled to Proxy and Istio repos.
 
-To make repos consistent
 Make sure that you are checking for sha in the same branch (ie release-1.1 for
 all repos)
 
