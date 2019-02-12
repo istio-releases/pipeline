@@ -52,9 +52,9 @@ artifacts to the right place. You can find the post-submit job at
 http://prow.istio.io/?repo=istio-releases%2Fpipeline&type=postsubmit.
 
 
-## Kick off a Monthly Release
+## Kick off a Monthly/Snapshot/Patch Release
 
-Similar to daily releases, a monthly (or LTS/patch) release can be kicked off by sending out
+Similar to daily releases, a monthly (or LTS/snapshot/patch) release can be kicked off by sending out
 a new pull request. As the monthly release parameters are typically determined manually, you
 can first check out the right release branch (e.g. release-1.1), and modify the parameters
 directly in [monthly/release_params.sh](https://github.com/istio-releases/pipeline/blob/master/monthly/release_params.sh).
@@ -76,7 +76,8 @@ release branch where you want to build the release from.
 * ```CB_PIPELINE_TYPE``` is the release type. It should be ```monthly``` for monthly releases
 and you can leave the existing value alone.
 
-* ```CB_VERSION``` is the new release version. E.g. 1.0.6 or 1.1.0-snapshot.5.
+* ```CB_VERSION``` is the new release version. Please follow the vesion semantic as documented in
+https://istio.io/about/release-cadence/#naming-scheme. E.g. 1.0.6 or 1.1.0-snapshot.5.
 
 You can even configure some advanced release parameters if you know what you are doing. 
 Example: https://github.com/istio-releases/pipeline/pull/102/files
