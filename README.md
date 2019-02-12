@@ -104,7 +104,7 @@ lastStableSHA = abcd
 3. In istio/istio repo in Gopkg.lock for name = "istio.io/api"
 digest = "1:zxcv"
 
-Or for step 3
+Or for step 3 use [dep](https://github.com/istio/istio/wiki/Vendor-FAQ)
 go get -u github.com/golang/dep/cmd/dep
 dep ensure -update istio.io/api
 
