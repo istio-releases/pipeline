@@ -84,6 +84,22 @@ Example: https://github.com/istio-releases/pipeline/pull/102/files
 And then you can send a PR with this file change to trigger release automation.  As a convention,
 please use `MONTHLY <release version>` as the PR title.
 
+CB_VERIFY_CONSISTENCY makes sure that the same API sha pulled to Proxy and Istio repos.
+
+To make repos consistent
+Make sure that you are checking for sha in the same branch (ie release-1.1 for
+all repos)
+
+1. In istio/proxy repo in repositories.bzl
+ISTIO_API = abcd // sha from istio/API repo
+ISTIO_API_SHA256 = zxcv
+
+2. In istio/proxy repo in istio.deps for ISTIO_API
+lastStableSHA = abcd
+
+3. In istio/istio repo in Gopkg.lock for name = "istio.io/api"
+digest = "1:zxcv"
+
 
 # Monitoring
 
