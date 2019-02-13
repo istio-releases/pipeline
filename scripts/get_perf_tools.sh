@@ -27,12 +27,13 @@ export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_
 
 # Checkout istio/tools.git at corresponding SHA
 mkdir -p ${GOPATH}/src/istio.io
-# stay in istio/istio
-pushd    ${GOPATH}/src/istio.io
+pushd ${GOPATH}/src/istio.io
   git clone -n https://github.com/$CB_GITHUB_ORG/tools.git
   pushd tools
     git checkout $SHA
   popd
-# Run the test script in istio/istio.
+popd
+# Run the test script in istio/istio
+pushd ${GOPATH}/src/istio.io/istio
 exec "$1"
 
