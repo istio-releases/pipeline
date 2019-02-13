@@ -79,6 +79,31 @@ and you can leave the existing value alone.
 * ```CB_VERSION``` is the new release version. Please follow the vesion semantic as documented in
 https://istio.io/about/release-cadence/#naming-scheme. E.g. 1.0.6 or 1.1.0-snapshot.5.
 
+* ```CB_VERIFY_CONSISTENCY``` makes sure that the same API sha is pulled to Proxy and Istio repos.
+
+Make sure that you are checking for sha in the same branch (ie release-1.1 for
+all repos)
+
+ 1. In istio/proxy, update ISTIO_API and ISTIO_API_SHA256 in
+[repositories.bzl](https://github.com/istio/proxy/blob/master/repositories.bzl)
+
+ To get sha256 run
+```shell
+COMMIT=commit_sha
+wget https://github.com/istio/api/archive/${COMMIT}.tar.gz
+sha256sum ${COMMIT}.tar.gz
+```
+
+ 2. In istio/proxy, update ISTIO_API sha in [istio.deps](https://github.com/istio/proxy/blob/master/istio.deps).
+
+ 3. In istio/istio run [dep](https://github.com/istio/istio/wiki/Vendor-FAQ)
+```shell
+go get -u github.com/golang/dep/cmd/dep
+dep ensure -update istio.io/api
+```
+
+It should update both istio.io/api sha and digest in [https://github.com/istio/istio/blob/master/Gopkg.lock](Gopkg.lock)
+
 You can even configure some advanced release parameters if you know what you are doing. 
 Example: https://github.com/istio-releases/pipeline/pull/102/files
 
