@@ -89,7 +89,9 @@ all repos)
 
  To get sha256 run
 ```shell
-wget https://github.com/istio/api/archive/COMMIT.tar.gz && sha256sum COMMIT.tar.gz
+COMMIT=commit_sha
+wget https://github.com/istio/api/archive/${COMMIT}.tar.gz
+sha256sum ${COMMIT}.tar.gz
 ```
 
  2. In istio/proxy, update ISTIO_API sha in [istio.deps](https://github.com/istio/proxy/blob/master/istio.deps).
