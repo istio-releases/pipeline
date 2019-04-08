@@ -24,33 +24,15 @@ set -x
 source scripts/pipeline_parameters_lib.sh
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "tools" | cut -f 2 -d " ")
-export HUB="$CB_DOCKER_HUB"
-export TAG="$CB_VERSION"
-export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
+echo "Getting tools repo with sha=$SHA"
+mkdir -p ${GOPATH}/src/istio.io
+pushd    ${GOPATH}/src/istio.io
+  git clone -n https://github.com/$CB_GITHUB_ORG/tools.git
+  pushd tools
+    git checkout $SHA
+  popd
+popd
 
-# Get istio source code at the $SHA for this build
-function git_clone_istio() {
-  # Checkout istio at the greenbuild
-  mkdir -p ${GOPATH}/src/istio.io
-  pushd    ${GOPATH}/src/istio.io
-
-  git clone -n https://github.com/$CB_GITHUB_ORG/istio.git
-  pushd istio
-
-  #from now on we are in ${GOPATH}/src/istio.io/istio dir
-  git checkout $SHA
-}
-
-# Set up e2e tests for release qualification
-git_clone_istio
-
-source "prow/lib.sh"
-
-download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
-
-# Use downloaded yaml artifacts rather than the ones generated locally
-cp -R istio-${TAG}/install/* install/
-
-# Run the test script in istio/istio.
+# Run next command.
 exec "$1"
 
