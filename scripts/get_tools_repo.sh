@@ -34,5 +34,5 @@ pushd    ${GOPATH}/src/istio.io
 popd
 
 # Run next command.
-exec "$1"
+exec "$@"
 
