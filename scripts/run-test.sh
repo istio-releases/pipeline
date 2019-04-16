@@ -52,5 +52,5 @@ download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
 cp -R istio-${TAG}/install/* install/
 
 # Run the test script in istio/istio.
-exec "$1"
+exec "$@"
 
