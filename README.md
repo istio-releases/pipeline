@@ -157,7 +157,7 @@ build/release: https://github.com/istio/istio/tree/master/release
 test: https://github.com/istio/istio/tree/master/prow
 
 ## Why is GCB/CB prefix everywhere?
-Legacy! Releases were built by GCB (Google Clound Builder) before, and these prefixes had not been
+Legacy! Releases were built by GCB (Google Cloud Builder) before, and these prefixes had not been
 cleaned up.
 
 ## Scheduled Jobs
