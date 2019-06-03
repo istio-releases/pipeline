@@ -48,12 +48,14 @@ function build_istio_release_image() {
 	cd istio
 	git checkout $CB_COMMIT
 	cp release/gcb/*sh /workspace
-	exec release/gcb/run_build.sh
+	. ./release/gcb/run_build.sh
 }
 
 # Get istio source code at the $SHA for this build
 function git_clone_istio() 
-{  # Checkout istio at the greenbuild
+{  
+  echo Starting git_clone_istio
+  # Checkout istio at the greenbuild
   mkdir -p ${GOPATH}/src/istio.io
   pushd    ${GOPATH}/src/istio.io
 
