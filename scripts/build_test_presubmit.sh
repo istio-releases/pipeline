@@ -36,24 +36,19 @@ source /workspace/gcb_env.sh
 
 function build_istio_release_image() {
 	mkdir -p /workspace/go/src/istio.io/
-
-	if [ "$PARAM_FILE_CHANGED" = false ] ; then
-	  echo no param file is changed. bypasssing build and release steps
-	  exit 0
-	fi
-
-
 	cd /workspace/go/src/istio.io/
 	git clone "https://github.com/$CB_GITHUB_ORG/istio" -b $CB_BRANCH
 	cd istio
 	git checkout $CB_COMMIT
 	cp release/gcb/*sh /workspace
-	exec release/gcb/run_build.sh
+	. ./release/gcb/run_build.sh
 }
 
 # Get istio source code at the $SHA for this build
 function git_clone_istio() 
-{  # Checkout istio at the greenbuild
+{  
+  echo Starting git_clone_istio
+  # Checkout istio at the greenbuild
   mkdir -p ${GOPATH}/src/istio.io
   pushd    ${GOPATH}/src/istio.io
 
