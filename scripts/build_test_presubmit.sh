@@ -73,6 +73,8 @@ download_untar_istio_release ${ISTIO_REL_URL} ${TAG}
 # Use downloaded yaml artifacts rather than the ones generated locally
 cp -R istio-${TAG}/install/* install/
 
+rm -rf /root/.docker
+export DOCKER_CONFIG=""
 # Run the test script in istio/istio.
 exec "$@"
 
