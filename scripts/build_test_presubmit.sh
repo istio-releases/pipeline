@@ -24,15 +24,15 @@ set -x
 source scripts/pipeline_parameters_lib.sh
 
 export WORKFLOW="presubmit"
-export HUB="$CB_DOCKER_HUB"
 IFS="/" read -ra TEST_NAME <<< $@
 export CB_VERSION="$CB_VERSION"-"${TEST_NAME[1]}"
 
 sed -i -- 's/export WORKFLOW=.*/export WORKFLOW=presubmit/g' /workspace/gcb_env.sh
 sed -i -- "s/export CB_VERSION=.*/export CB_VERSION=${CB_VERSION}/g" /workspace/gcb_env.sh
 
-export TAG="$CB_VERSION"
 source /workspace/gcb_env.sh
+export HUB="$CB_DOCKER_HUB"
+export TAG="$CB_VERSION"
 
 function build_istio_release_image() {
 	mkdir -p /workspace/go/src/istio.io/
