@@ -11,9 +11,9 @@ export WORKFLOW=${WORKFLOW:-}
 
 # config for specific type of pipeline (daily/monthly)
 if [[ "$WORKFLOW" == "presubmit" ]]; then
-  export CB_DOCKER_HUB="gcr.io/istio-release"
-  export CB_ISTIOCTL_DOCKER_HUB="gcr.io/istio-release"
-  export CB_PUSH_DOCKER_HUBS="gcr.io/istio-release"
+  export CB_DOCKER_HUB="gcr.io/istio-prerelease-testing"
+  export CB_ISTIOCTL_DOCKER_HUB="gcr.io/istio-prerelease-testing"
+  export CB_PUSH_DOCKER_HUBS="gcr.io/istio-prerelease-testing"
   export CB_VERIFY_CONSISTENCY="false"
   export CB_GCS_BUILD_BUCKET="istio-presubmit-release-pipeline-data"
   export CB_GCS_STAGING_BUCKET="istio-presubmit-prerelease"
