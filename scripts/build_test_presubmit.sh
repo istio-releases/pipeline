@@ -79,4 +79,3 @@ rm -rf /root/.docker
 export DOCKER_CONFIG=""
 # Run the test script in istio/istio.
 exec "$@"
-
