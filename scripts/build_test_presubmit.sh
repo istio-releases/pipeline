@@ -25,7 +25,7 @@ source scripts/pipeline_parameters_lib.sh
 
 export WORKFLOW="presubmit"
 IFS="/" read -ra TEST_FILE <<< $@
-test_name=${TEST_FILE[1]%.*}
+test_name=${TEST_FILE[1]%.*//e2e-/}
 
 export CB_VERSION="$CB_VERSION"-"$test_name"
 
@@ -62,8 +62,10 @@ function git_clone_istio()
 }
 
 # if [ "$PARAM_FILE_CHANGED" = true ] ; then
-#   build_istio_release_image
+  # build_istio_release_image
 # fi
+
+build_istio_release_image
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
