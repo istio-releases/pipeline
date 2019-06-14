@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2018 Istio Authors
+# Copyright 2019 Istio Authors
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,8 +24,10 @@ set -x
 source scripts/pipeline_parameters_lib.sh
 
 export WORKFLOW="presubmit"
-IFS="/" read -ra TEST_NAME <<< $@
-export CB_VERSION="$CB_VERSION"-"${TEST_NAME[1]}"
+IFS="/" read -ra TEST_FILE <<< $@
+test_name=${TEST_FILE[1]%.*}
+
+export CB_VERSION="$CB_VERSION"-"$test_name"
 
 sed -i -- 's/export WORKFLOW=.*/export WORKFLOW=presubmit/g' /workspace/gcb_env.sh
 sed -i -- "s/export CB_VERSION=.*/export CB_VERSION=${CB_VERSION}/g" /workspace/gcb_env.sh
