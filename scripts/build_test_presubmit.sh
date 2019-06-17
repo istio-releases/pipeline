@@ -65,11 +65,9 @@ function git_clone_istio()
   git checkout $SHA
 }
 
-# if [ "$PARAM_FILE_CHANGED" = true ] ; then
-  # build_istio_release_image
-# fi
-
+# We want to always build&push the images for each test invocation.
 build_istio_release_image
+
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
