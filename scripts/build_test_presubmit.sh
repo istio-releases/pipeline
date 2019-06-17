@@ -26,7 +26,7 @@ source scripts/pipeline_parameters_lib.sh
 export WORKFLOW="presubmit"
 IFS="/" read -ra TEST_FILE <<< $@
 test_name=${TEST_FILE[1]%.*//e2e-/}
-
+echo "test_name=${test_name}"
 export CB_VERSION="$CB_VERSION"-"$test_name"
 
 sed -i -- 's/export WORKFLOW=.*/export WORKFLOW=presubmit/g' /workspace/gcb_env.sh
