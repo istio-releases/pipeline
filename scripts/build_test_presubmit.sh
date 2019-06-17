@@ -27,7 +27,7 @@ export WORKFLOW="presubmit"
 IFS="/" read -ra TEST_FILE <<< $@
 test_name=${TEST_FILE[1]%.*}
 
-export CB_VERSION="$CB_VERSION"-"${test_name//e2e-/}"
+export CB_VERSION=$(echo "$CB_VERSION"-"${test_name//e2e-/}" | md5sum)
 
 
 sed -i -- 's/export WORKFLOW=.*/export WORKFLOW=presubmit/g' /workspace/gcb_env.sh
