@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2018 Istio Authors
+# Copyright 2019 Istio Authors
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,8 +24,14 @@ set -x
 source scripts/pipeline_parameters_lib.sh
 
 export WORKFLOW="presubmit"
-IFS="/" read -ra TEST_NAME <<< $@
-export CB_VERSION="$CB_VERSION"-"${TEST_NAME[1]}"
+IFS="/" read -ra TEST_FILE <<< $@
+test_name=${TEST_FILE[1]%.*}
+
+# We need to make the TAG/CB_VERSION shorter so that
+# the job name shorter than 63 chars
+export CB_VERSION=$(echo "$CB_VERSION"-"${test_name//e2e-/}" | \
+					md5sum | awk '{print $1}')
+
 
 sed -i -- 's/export WORKFLOW=.*/export WORKFLOW=presubmit/g' /workspace/gcb_env.sh
 sed -i -- "s/export CB_VERSION=.*/export CB_VERSION=${CB_VERSION}/g" /workspace/gcb_env.sh
@@ -59,9 +65,11 @@ function git_clone_istio()
   git checkout $SHA
 }
 
-if [ "$PARAM_FILE_CHANGED" = true ] ; then
-  build_istio_release_image
-fi
+# if [ "$PARAM_FILE_CHANGED" = true ] ; then
+  # build_istio_release_image
+# fi
+
+build_istio_release_image
 
 export SHA=$(wget -q -O - "https://storage.googleapis.com/$CB_GCS_RELEASE_TOOLS_PATH/manifest.txt" | grep "istio" | cut -f 2 -d " ")
 export ISTIO_REL_URL="https://storage.googleapis.com/$CB_GCS_BUILD_PATH"
@@ -79,4 +87,3 @@ rm -rf /root/.docker
 export DOCKER_CONFIG=""
 # Run the test script in istio/istio.
 exec "$@"
-
