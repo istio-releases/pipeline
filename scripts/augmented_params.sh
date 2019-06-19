@@ -7,9 +7,22 @@ export CB_GITHUB_ORG=${CB_GITHUB_ORG:-istio}
 export CB_GITHUB_TOKEN_FILE_PATH=${CB_GITHUB_TOKEN_FILE_PATH=:-istio-secrets/github.txt.enc}
 
 export CB_TEST_GITHUB_TOKEN_FILE_PATH=${CB_TEST_GITHUB_TOKEN_FILE_PATH:-}
+export WORKFLOW=${WORKFLOW:-}
 
+if [[ "$WORKFLOW" == "presubmit" ]]; then
+  export CB_DOCKER_HUB="gcr.io/istio-prerelease-testing"
+  export CB_ISTIOCTL_DOCKER_HUB="gcr.io/istio-prerelease-testing"
+  export CB_PUSH_DOCKER_HUBS="gcr.io/istio-prerelease-testing"
+  export CB_VERIFY_CONSISTENCY="false"
+  export CB_GCS_BUILD_BUCKET="istio-presubmit-release-pipeline-data"
+  export CB_GCS_STAGING_BUCKET="istio-presubmit-prerelease"
+
+  export CB_GCS_MONTHLY_RELEASE_PATH=$CB_GCS_BUILD_BUCKET/monthly/$CB_VERSION
+  export CB_GCS_BUILD_PATH=$CB_GCS_BUILD_BUCKET/$CB_PIPELINE_TYPE/$CB_VERSION
+  export CB_GCS_FULL_STAGING_PATH=$CB_GCS_STAGING_BUCKET/$CB_PIPELINE_TYPE/$CB_VERSION
+  export CB_GCS_RELEASE_TOOLS_PATH=$CB_GCS_BUILD_BUCKET/release-tools/$CB_PIPELINE_TYPE/$CB_VERSION
 # config for specific type of pipeline (daily/monthly)
-if [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
+elif [[ "$CB_PIPELINE_TYPE" ==  "daily" ]]; then
   export CB_DOCKER_HUB=${CB_DOCKER_HUB:-gcr.io/istio-release}
   export CB_ISTIOCTL_DOCKER_HUB=${CB_ISTIOCTL_DOCKER_HUB:-gcr.io/istio-release}
   export CB_PUSH_DOCKER_HUBS=${CB_PUSH_DOCKER_HUBS:-gcr.io/istio-release}
