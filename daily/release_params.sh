@@ -1,4 +1,4 @@
 export CB_BRANCH=master
 export CB_PIPELINE_TYPE=daily
-export CB_VERSION=master-20190809-09-16
-export CB_COMMIT=762a59c1355fe38adc6562fbc0ce45f81c9213f5
+export CB_VERSION=master-20190810-09-16
+export CB_COMMIT=5026f1e268ae342ba4c878a78de888a4b45009d8
