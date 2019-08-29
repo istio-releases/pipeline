@@ -1,4 +1,4 @@
-export CB_BRANCH=master
+export CB_BRANCH=istioctl-crash-1.3
 export CB_PIPELINE_TYPE=daily
-export CB_VERSION=master-20190828-09-16
-export CB_COMMIT=7442bccd78b3d7b448b98e73143f0b98e841dfd5
+export CB_VERSION=release-1.3-20190829-11-16
+export CB_COMMIT=b2c7d2f454e3aa0fc12cac8fc388c702e796a953
