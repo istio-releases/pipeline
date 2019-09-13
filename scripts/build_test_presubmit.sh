@@ -29,7 +29,7 @@ test_name=${TEST_FILE[1]%.*}
 
 # We need to make the TAG/CB_VERSION shorter so that
 # the job name shorter than 63 chars
-export CB_VERSION="1.1-"$(echo "$CB_VERSION"-"${test_name//e2e-/}" | \
+export CB_VERSION="rel-1.1-"$(echo "$CB_VERSION"-"${test_name//e2e-/}" | \
 					md5sum | awk '{print $1}')
 
 
