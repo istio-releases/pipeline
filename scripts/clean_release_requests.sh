@@ -16,17 +16,14 @@
 
 set -x
 
-GOPATH=${GOPATH:-$PWD/go}
-mkdir -p {$GOPATH}/bin
-
-time go get  istio.io/test-infra/toolbox/githubctl
+time go get istio.io/test-infra/toolbox/githubctl
 
 if [[ ! -z "${RELEASE_BOT}" ]]; then
   git config --global user.name "TestRunnerBot"
   git config --global user.email "testrunner@istio.io"
 fi
 
-"$GOPATH/bin/githubctl" \
+"githubctl" \
     --token_file="$GITHUB_TOKEN_FILE" \
     --op=cleanupReleaseRequests \
     --owner="istio-releases" \
