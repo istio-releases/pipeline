@@ -45,7 +45,7 @@ if [[ ! -z "${RELEASE_BOT}" ]]; then
 fi
 
 if [[ ! -z "${GITHUB_TOKEN_FILE}" ]]; then
-  "$GOPATH/bin/githubctl" \
+  githubctl \
       --token_file="$GITHUB_TOKEN_FILE" \
       --op=newReleaseRequest \
       --tag="$VERSION" \
