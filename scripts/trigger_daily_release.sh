@@ -37,7 +37,7 @@ rm -rf ${ISTIO_DIR}
 GOPATH=${GOPATH:-$PWD/go}
 mkdir -p ${GOPATH}/bin
 
-time go get  istio.io/test-infra/toolbox/githubctl
+time go get istio.io/test-infra/toolbox/githubctl
 
 if [[ ! -z "${RELEASE_BOT}" ]]; then
   git config --global user.name "Istio Release Bot"
@@ -45,7 +45,7 @@ if [[ ! -z "${RELEASE_BOT}" ]]; then
 fi
 
 if [[ ! -z "${GITHUB_TOKEN_FILE}" ]]; then
-  "$GOPATH/bin/githubctl" \
+    githubctl \
       --token_file="$GITHUB_TOKEN_FILE" \
       --op=newReleaseRequest \
       --tag="$VERSION" \
